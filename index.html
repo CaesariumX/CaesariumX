@@ -2,17 +2,41 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  <!-- Zlwk ilyh vwhsv wdnhq, wkh qhaw jdwh bhlogv. -->
-  <title>CaesariumX</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CaesariumX - AI Tools Platform</title>
   <style>
     * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
     }
+
+    :root {
+      --primary: #ffffff;
+      --primary-dark: #e0e0e0;
+      --secondary: #000000;
+      --bg-dark: #000000;
+      --bg-darker: #0a0a0a;
+      --bg-card: #111111;
+      --bg-card-hover: #1a1a1a;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b0b0;
+      --text-muted: #666666;
+      --border: #333333;
+      --border-light: #444444;
+      --success: #00ff00;
+      --danger: #ff0000;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.7);
+    }
+
     body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #000;
-      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
 
     a {
@@ -20,437 +44,670 @@
       color: inherit;
     }
 
-    /* ===== FIXED HEADER STYLES ===== */
+    /* Crypto Background */
+    .crypto-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, #000000 0%, #0a0a0a 50%, #000000 100%);
+      z-index: -2;
+      overflow: hidden;
+    }
+
+    .crypto-ticker {
+      position: absolute;
+      white-space: nowrap;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.1);
+      animation: tickerScroll 20s linear infinite;
+    }
+
+    .crypto-ticker:nth-child(1) { top: 10%; animation-delay: 0s; }
+    .crypto-ticker:nth-child(2) { top: 20%; animation-delay: -2s; }
+    .crypto-ticker:nth-child(3) { top: 30%; animation-delay: -4s; }
+    .crypto-ticker:nth-child(4) { top: 40%; animation-delay: -6s; }
+    .crypto-ticker:nth-child(5) { top: 50%; animation-delay: -8s; }
+
+    @keyframes tickerScroll {
+      0% { transform: translateX(-100vw); }
+      100% { transform: translateX(100vw); }
+    }
+
+    .price-up {
+      color: rgba(0, 255, 0, 0.1) !important;
+    }
+
+    .price-down {
+      color: rgba(255, 0, 0, 0.1) !important;
+    }
+
+    .grid-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Header */
     header {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
       padding: 1.5rem 2rem;
-      background-color: #000;
-      border-bottom: 1px solid #333;
+      background-color: var(--bg-card);
+      border-bottom: 1px solid var(--border);
       position: relative;
-      min-height: 80px; /* ✅ Added so buttons/menu don’t go under the line */
+      backdrop-filter: blur(10px);
     }
 
     .logo {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
 
     .logo img {
-      height: 50px;
-      transition: 2s ease-in-out;
-      animation: rotateLogo 5s infinite linear;
+      height: 40px;
+      transition: transform 0.3s ease;
     }
 
-    @keyframes rotateLogo {
-      0% { transform: rotateY(0deg); }
-      100% { transform: rotateY(360deg); }
+    .logo:hover img {
+      transform: scale(1.05);
     }
 
-    /* Desktop Buttons (Top-Right) */
-    .desktop-buttons {
-      position: absolute;
-      top: 1.5rem;
-      right: 2rem;
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .logo-text span {
+      color: var(--primary);
+    }
+
+    /* Navigation */
+    .nav-links {
       display: flex;
-      gap: 1rem;
-      z-index: 2;
+      gap: 2rem;
+      align-items: center;
     }
 
-    .desktop-buttons a {
-      background: #fff;
-      color: #000;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      font-weight: bold;
+    .nav-links a {
+      padding: 0.75rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
       transition: all 0.3s ease;
+      font-size: 0.9rem;
     }
 
-    .desktop-buttons a:hover {
-      background: #ddd;
+    .nav-links a:hover {
+      background: var(--text-primary);
+      color: var(--bg-dark);
+      transform: translateY(-2px);
+    }
+
+    .nav-links .primary {
+      background: var(--text-primary);
+      color: var(--bg-dark);
+    }
+
+    .nav-links .primary:hover {
+      background: var(--primary-dark);
     }
 
     .menu-btn {
-      position: absolute; /* ✅ Moved menu to top-left */
-      top: 1.5rem;
-      left: 2rem;
-      display: flex;
+      display: none;
       flex-direction: column;
-      justify-content: space-between;
-      height: 24px;
-      width: 30px;
+      gap: 4px;
       cursor: pointer;
-      z-index: 2;
+      padding: 0.5rem;
     }
 
     .menu-btn div {
-      height: 4px;
-      background-color: #fff;
-      border-radius: 2px;
-      transition: 0.3s ease;
-    }
- /* gjdtsi qnjx f rnwwtw tk ywzym.*/
-    .menu {
-      display: none;
-      position: absolute;
-      top: 70px;
-      left: 0;
-      background-color: #111;
-      width: 100%;
-      text-align: center;
-      padding: 1rem;
-      box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.5);
-      z-index: 999;
+      width: 25px;
+      height: 3px;
+      background: var(--text-primary);
+      transition: 0.3s;
     }
 
-    .menu a {
-      display: block;
-      padding: 1rem;
-      color: #fff;
-      font-size: 1.2rem;
-      text-transform: uppercase;
-      border-bottom: 1px solid #333;
-    }
-
-    .menu a:hover {
-      background-color: #333;
-    }
-
-    .menu.open {
-      display: block;
-    }
-
-    .mobile-top-buttons {
-      display: none;
-    }
-
+    /* Hero Section */
     .hero {
       text-align: center;
-      padding: 5rem 2rem 3rem;
-      border-bottom: 1px solid #333;
+      padding: 6rem 2rem 4rem;
+      border-bottom: 1px solid var(--border);
+      position: relative;
     }
 
     .hero-content {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 3rem;
+      max-width: 800px;
+      margin: 0 auto;
     }
 
-    .hero-img {
-      width: 120px;
-      height: auto;
-    }
-
-    .hero-text h1 {
-      font-size: 5rem;
-      margin: 0.5rem 0;
-    }
-
-    .hero-text .tagline {
-      font-size: 1.8rem;
-      color: #aaa;
-    }
-
-    .columns {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      padding: 3rem 2rem;
-      gap: 2rem;
-    }
-
-    .column {
-      flex: 1;
-      min-width: 220px;
-      text-align: center;
-    }
-
-    .socials a {
-      display: inline-block;
-      margin: 0.5rem;
-      padding: 0.6rem 1.2rem;
-      border: 1px solid #fff;
-      border-radius: 4px;
-      color: #fff;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    .socials a:hover {
-      background-color: #fff;
-      color: #000;
-    }
-
-    .center img {
-      width: 90px;
-      height: 90px;
+    .hero h1 {
+      font-size: 4rem;
+      font-weight: 800;
       margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
     }
 
-    .buy-btn {
-      background: none;
-      border: 2px solid #fff;
-      color: #fff;
-      padding: 0.6rem 1.2rem;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: 0.3s;
+    .tagline {
+      font-size: 1.5rem;
+      color: var(--text-secondary);
+      margin-bottom: 3rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
     }
 
-    .buy-btn:hover {
-      background: #fff;
-      color: #000;
-    }
-
-    .contract {
-      word-break: break-all;
-      font-size: 0.9rem;
-      color: #ccc;
-      margin-bottom: 1rem;
-    }
-
-    .etherscan-btn {
-      display: inline-block;
-      background: #fff;
-      color: #000;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    .etherscan-btn:hover {
-      background: #ddd;
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem 1rem;
-      background: #111;
-      color: #888;
-      font-size: 0.9rem;
-      border-top: 1px solid #333;
-    }
-
-    .token-info {
-      background-color: #000;
-      color: #fff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    /* AI Tools Grid */
+    .ai-tools {
       padding: 4rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
-    .token-info img {
-      width: 120px;
-      height: auto;
-    }
-
-    .token-info .text {
-      flex: 1;
+    .ai-tools h2 {
       text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 3rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
     }
 
-    .token-info .text h2 {
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .tool-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .tool-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .tool-card:hover::before {
+      left: 100%;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--border-light);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .tool-icon {
       font-size: 2.5rem;
       margin-bottom: 1rem;
+      text-align: center;
     }
 
-    .token-info .text p {
-      font-size: 1.2rem;
-      color: #ccc;
+    .tool-card h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
-    /* MOBILE RESPONSIVE STYLES */
+    .tool-card p {
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .tool-link {
+      display: block;
+      text-align: center;
+      padding: 0.75rem 1.5rem;
+      background: var(--text-primary);
+      color: var(--bg-dark);
+      border-radius: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: all 0.3s ease;
+    }
+
+    .tool-link:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    /* Token Info Section */
+    .token-section {
+      padding: 4rem 2rem;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .token-content {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .token-content h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .token-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      margin: 3rem 0;
+    }
+
+    .metric-card {
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .metric-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .metric-label {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .contract-info {
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .contract-address {
+      font-family: monospace;
+      word-break: break-all;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .contract-links {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .contract-link {
+      padding: 0.5rem 1rem;
+      background: var(--text-primary);
+      color: var(--bg-dark);
+      border-radius: 6px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.8rem;
+      transition: all 0.3s ease;
+    }
+
+    .contract-link:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    /* Social Links */
+    .social-section {
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .social-section h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .social-link {
+      padding: 1rem 2rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: all 0.3s ease;
+    }
+
+    .social-link:hover {
+      background: var(--text-primary);
+      color: var(--bg-dark);
+      transform: translateY(-2px);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .footer-content {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+
+    .footer-link {
+      color: var(--text-secondary);
+      transition: color 0.3s ease;
+    }
+
+    .footer-link:hover {
+      color: var(--text-primary);
+    }
+
+    /* Mobile Styles */
     @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 1rem;
-      }
-
-      .logo {
-        position: static !important;
-        transform: none !important;
-        margin: 1rem auto;
-      }
-
-      .desktop-buttons {
-        display: none;
-      }
-
-      .mobile-top-buttons {
+      .menu-btn {
         display: flex;
+      }
+
+      .nav-links {
+        display: none;
         position: absolute;
-        top: 1rem;
-        right: 1rem;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--bg-card);
         flex-direction: column;
-        gap: 0.5rem;
-        z-index: 1000;
+        padding: 1rem;
+        border-bottom: 1px solid var(--border);
       }
 
-      .mobile-top-buttons a {
-        background: #fff;
-        color: #000;
-        padding: 0.4rem 0.8rem;
-        border-radius: 4px;
-        font-size: 0.85rem;
-        font-weight: bold;
+      .nav-links.active {
+        display: flex;
       }
 
-      .hero-content {
-        flex-direction: column;
-        gap: 1.5rem;
+      .hero h1 {
+        font-size: 2.5rem;
       }
 
-      .hero-text h1 {
-        font-size: 3rem;
-      }
-
-      .hero-text .tagline {
+      .tagline {
         font-size: 1.2rem;
       }
 
-      .hero-img {
-        display: none;
+      .tools-grid {
+        grid-template-columns: 1fr;
       }
 
-      .columns {
+      .token-metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .contract-links {
         flex-direction: column;
         align-items: center;
-        text-align: center;
-        padding: 2rem 1rem;
       }
 
-      .token-info {
+      .social-links {
         flex-direction: column;
-        text-align: center;
-        padding: 2rem 1rem;
+        align-items: center;
       }
 
-      .token-info img {
-        width: 80px;
-        margin: 1rem 0;
-      }
-
-      .token-info .text h2 {
-        font-size: 1.8rem;
-      }
-
-      .token-info .text p {
-        font-size: 1rem;
-      }
-
-      .buy-btn {
-        font-size: 1rem !important;
-        padding: 0.6rem 1.2rem !important;
-      }
-
-      .etherscan-btn {
-        margin-top: 1rem;
+      .footer-links {
+        flex-direction: column;
+        gap: 1rem;
       }
     }
   </style>
 </head>
 <body>
+  <!-- Crypto Background -->
+  <div class="crypto-background">
+    <div class="grid-overlay"></div>
+    <div class="crypto-ticker price-up">BTC $42,150 ▲ 2.34%</div>
+    <div class="crypto-ticker price-down">ETH $2,850 ▼ 1.67%</div>
+    <div class="crypto-ticker price-up">CRX $0.85 ▲ 5.23%</div>
+    <div class="crypto-ticker price-down">SOL $98.50 ▼ 0.89%</div>
+    <div class="crypto-ticker price-up">AI $1.25 ▲ 8.45%</div>
+  </div>
 
   <header>
+    <div class="logo">
+      <img src="https://i.imgur.com/lxeYrZ8.png" alt="CaesariumX Logo">
+      <div class="logo-text">CAESARIUM<span>X</span></div>
+    </div>
+
     <div class="menu-btn" onclick="toggleMenu()">
       <div></div>
       <div></div>
       <div></div>
     </div>
 
-    <div class="logo">
-      <img src="https://i.imgur.com/lxeYrZ8.png" alt="CaesariumX Logo">
-    </div>
-
-    <div class="desktop-buttons">
-      <a href="CaesariumX_Whitepaper.pdf" download>Whitepaper</a>
-      <a href="public-sale.html">Public Sale</a>
-    </div>
-
-    <div class="mobile-top-buttons">
-      <a href="public-sale.html">Public Sale</a>
-      <a href="CaesariumX_Whitepaper.pdf" download>Whitepaper</a>
-    </div>
+    <nav class="nav-links" id="navLinks">
+      <a href="#ai-tools">AI Tools</a>
+      <a href="#token">Token</a>
+      <a href="#social">Community</a>
+      <a href="CaesariumX_Whitepaper.pdf" download class="primary">Whitepaper</a>
+      <a href="public-sale.html" class="primary">Public Sale</a>
+    </nav>
   </header>
 
-  <div class="menu" id="menu">
-    <a href="#hero">Home</a>
-    <a href="#about">About</a>
-    <a href="#socials">Follow Us</a>
-    <a href="public-sale.html">Public Sale</a>
-  </div>
-
-  <section class="hero" id="hero">
+  <section class="hero">
     <div class="hero-content">
-      <img src="https://i.imgur.com/qcS2sax.png" alt="Roman Branch" class="hero-img" />
-      <div class="hero-text">
-        <h1>CaesariumX</h1>
-        <div class="tagline">Power to the Holders • Strength of the Ancient</div>
-      </div>
-      <img src="https://i.imgur.com/0NfawQU.png" alt="Roman Branch" class="hero-img" />
+      <h1>CAESARIUM X</h1>
+      <div class="tagline">AI Tools Platform • Power to the Holders</div>
+      <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+        Advanced AI tools platform combining cryptocurrency analysis, trading automation, and intelligent market insights.
+      </p>
     </div>
   </section>
 
-  <div class="columns" id="about">
-    <div class="column socials" id="socials">
-      <h2 style="margin-bottom: 1rem;">Follow Us</h2>
-      <a href="https://x.com/CaesariumX" target="_blank">X (Twitter)</a>
-      <a href="https://discord.gg/2nwABWxR" target="_blank">Discord</a>
-      <a href="#" target="_blank">Reddit</a>
-      <a href="#" target="_blank">Instagram</a>
-      <a href="#" target="_blank">TikTok</a>
-    </div>
-
-    <div class="column center">
-      <h2 style="margin-bottom: 1.2rem;">Join the Public Sale</h2>
-      <a href="public-sale.html" class="buy-btn" style="font-size: 1.2rem; padding: 0.8rem 1.5rem; display: inline-block;">$CRX Token</a>
-    </div>
-
-    <div class="column" style="margin-top: 2rem;">
-      <div class="contract">
-        Contract:<br>0x699133f4Fe4eD7232B88f1520927be03D26540FC
+  <section class="ai-tools" id="ai-tools">
+    <h2>AI Tools Suite</h2>
+    <div class="tools-grid">
+      <div class="tool-card">
+        <div class="tool-icon">📊</div>
+        <h3>Crypto Analyst</h3>
+        <p>Advanced cryptocurrency analysis with real-time technical indicators, price predictions, and market sentiment analysis.</p>
+        <a href="crypto-analyst.html" class="tool-link">Launch Tool</a>
       </div>
-      <a class="etherscan-btn" href="https://etherscan.io/address/0x699133f4Fe4eD7232B88f1520927be03D26540FC" target="_blank">View on Etherscan</a>
-    </div>
-  </div>
 
-  <section class="token-info">
-    <img src="https://i.imgur.com/0pRBeAs.png" alt="Roman Art Left" />
-    <div class="text">
-      <h2>About CaesariumX</h2>
-       <p>They stand tall though walls may loom</p>
-    <p>Divided no more, our hopes resume</p>
-    <p>Us unshaken by storms that rage</p>
-    <p>To carve new paths, we write our page</p>
-    <p>Rule of old fades when we stand</p>
-    <p>Us forging bonds across the land</p>
-    <p>We hold truth in our hands</p>
-    <p>Unite beyond the old demands</p>
-    <p>To rise as one and chart our way</p>
-    <p>Break the chains of yesterday</p>
-    <p>Them who question find our ray</p>
+      <div class="tool-card">
+        <div class="tool-icon">🤖</div>
+        <h3>AI Trading</h3>
+        <p>Automated trading strategies powered by machine learning algorithms and real-time market data analysis.</p>
+        <a href="ai-trading.html" class="tool-link">Coming Soon</a>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-icon">📈</div>
+        <h3>Portfolio Manager</h3>
+        <p>Intelligent portfolio management with risk assessment, rebalancing suggestions, and performance analytics.</p>
+        <a href="portfolio.html" class="tool-link">Coming Soon</a>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-icon">🔍</div>
+        <h3>Market Scanner</h3>
+        <p>Real-time market scanning for opportunities, anomalies, and emerging trends across multiple exchanges.</p>
+        <a href="scanner.html" class="tool-link">Coming Soon</a>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-icon">💬</div>
+        <h3>Sentiment Analysis</h3>
+        <p>Social media and news sentiment analysis to gauge market mood and predict price movements.</p>
+        <a href="sentiment.html" class="tool-link">Coming Soon</a>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-icon">🛡️</div>
+        <h3>Risk Assessment</h3>
+        <p>Comprehensive risk analysis tools for portfolio protection and intelligent position sizing.</p>
+        <a href="risk.html" class="tool-link">Coming Soon</a>
+      </div>
     </div>
-    <img src="https://i.imgur.com/0pRBeAs.png" alt="Roman Art Right" />
+  </section>
+
+  <section class="token-section" id="token">
+    <div class="token-content">
+      <h2>$CRX Token</h2>
+      <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 2rem;">
+        Powering the CaesariumX ecosystem with utility, governance, and premium feature access.
+      </p>
+
+      <div class="token-metrics">
+        <div class="metric-card">
+          <div class="metric-value">$0.85</div>
+          <div class="metric-label">Current Price</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">+23.5%</div>
+          <div class="metric-label">24H Change</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">$42M</div>
+          <div class="metric-label">Market Cap</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">#285</div>
+          <div class="metric-label">Market Rank</div>
+        </div>
+      </div>
+
+      <div class="contract-info">
+        <div class="contract-address">
+          0x699133f4Fe4eD7232B88f1520927be03D26540FC
+        </div>
+        <div class="contract-links">
+          <a href="https://etherscan.io/address/0x699133f4Fe4eD7232B88f1520927be03D26540FC" target="_blank" class="contract-link">View on Etherscan</a>
+          <a href="public-sale.html" class="contract-link">Join Public Sale</a>
+          <a href="#" class="contract-link">Add to Wallet</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="social-section" id="social">
+    <h2>Join Our Community</h2>
+    <div class="social-links">
+      <a href="https://x.com/CaesariumX" target="_blank" class="social-link">X (Twitter)</a>
+      <a href="https://discord.gg/2nwABWxR" target="_blank" class="social-link">Discord</a>
+      <a href="#" target="_blank" class="social-link">Telegram</a>
+      <a href="#" target="_blank" class="social-link">GitHub</a>
+      <a href="#" target="_blank" class="social-link">Medium</a>
+    </div>
   </section>
 
   <footer>
-    &copy; 2025 CaesariumX • Contact: <a href="mailto:caesariumx@outlook.com">caesariumx@outlook.com</a>
+    <div class="footer-content">
+      <div class="footer-links">
+        <a href="#ai-tools" class="footer-link">AI Tools</a>
+        <a href="#token" class="footer-link">Token</a>
+        <a href="#social" class="footer-link">Community</a>
+        <a href="CaesariumX_Whitepaper.pdf" download class="footer-link">Whitepaper</a>
+        <a href="public-sale.html" class="footer-link">Public Sale</a>
+      </div>
+      <p>&copy; 2025 CaesariumX • AI Tools Platform</p>
+      <p style="margin-top: 0.5rem; color: var(--text-muted);">
+        Contact: <a href="mailto:caesariumx@outlook.com" style="color: var(--text-secondary);">caesariumx@outlook.com</a>
+      </p>
+    </div>
   </footer>
 
   <script>
     function toggleMenu() {
-      document.getElementById('menu').classList.toggle('open');
+      document.getElementById('navLinks').classList.toggle('active');
     }
-  </script>
 
+    // Generate random crypto ticker updates
+    function updateTickers() {
+      const tickers = document.querySelectorAll('.crypto-ticker');
+      tickers.forEach(ticker => {
+        const change = (Math.random() - 0.5) * 10;
+        const newChange = change.toFixed(2);
+        const isPositive = change >= 0;
+        
+        if (ticker.classList.contains('price-up')) {
+          ticker.classList.remove('price-up');
+        }
+        if (ticker.classList.contains('price-down')) {
+          ticker.classList.remove('price-down');
+        }
+        
+        ticker.classList.add(isPositive ? 'price-up' : 'price-down');
+        
+        // Update ticker text (simplified)
+        const symbol = ticker.textContent.split(' ')[0];
+        const basePrice = symbol === 'BTC' ? 42150 : symbol === 'ETH' ? 2850 : symbol === 'CRX' ? 0.85 : symbol === 'SOL' ? 98.5 : 1.25;
+        const newPrice = (basePrice * (1 + change/100)).toFixed(2);
+        
+        ticker.textContent = `${symbol} $${newPrice} ${isPositive ? '▲' : '▼'} ${Math.abs(newChange)}%`;
+      });
+    }
+
+    // Update tickers every 5 seconds
+    setInterval(updateTickers, 5000);
+  </script>
 </body>
 </html>
