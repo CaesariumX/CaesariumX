@@ -269,9 +269,18 @@
     }
 
     .tool-icon {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      text-align: center;
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tool-icon svg {
+      width: 100%;
+      height: 100%;
+      filter: brightness(0) invert(1);
     }
 
     .tool-card h3 {
@@ -330,34 +339,6 @@
       letter-spacing: 0.1em;
     }
 
-    .token-metrics {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 2rem;
-      margin: 3rem 0;
-    }
-
-    .metric-card {
-      background: var(--bg-dark);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.5rem;
-      text-align: center;
-    }
-
-    .metric-value {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    .metric-label {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
     .contract-info {
       background: var(--bg-dark);
       border: 1px solid var(--border);
@@ -371,6 +352,7 @@
       word-break: break-all;
       color: var(--text-secondary);
       margin-bottom: 1rem;
+      font-size: 0.9rem;
     }
 
     .contract-links {
@@ -499,10 +481,6 @@
         grid-template-columns: 1fr;
       }
 
-      .token-metrics {
-        grid-template-columns: 1fr;
-      }
-
       .contract-links {
         flex-direction: column;
         align-items: center;
@@ -526,14 +504,14 @@
     <div class="grid-overlay"></div>
     <div class="crypto-ticker price-up">BTC $42,150 ▲ 2.34%</div>
     <div class="crypto-ticker price-down">ETH $2,850 ▼ 1.67%</div>
-    <div class="crypto-ticker price-up">CRX $0.85 ▲ 5.23%</div>
-    <div class="crypto-ticker price-down">SOL $98.50 ▼ 0.89%</div>
-    <div class="crypto-ticker price-up">AI $1.25 ▲ 8.45%</div>
+    <div class="crypto-ticker price-up">SOL $98.50 ▲ 0.89%</div>
+    <div class="crypto-ticker price-down">AI $1.25 ▼ 1.45%</div>
+    <div class="crypto-ticker price-up">XRP $0.62 ▲ 3.21%</div>
   </div>
 
   <header>
     <div class="logo">
-      <img src="https://i.imgur.com/lxeYrZ8.png" alt="CaesariumX Logo">
+      <img src="https://i.postimg.cc/bsh6LX4H/Caesarium-X-Logo.png" alt="CaesariumX Logo">
       <div class="logo-text">CAESARIUM<span>X</span></div>
     </div>
 
@@ -566,42 +544,80 @@
     <h2>AI Tools Suite</h2>
     <div class="tools-grid">
       <div class="tool-card">
-        <div class="tool-icon">📊</div>
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 17L9 11L13 15L21 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M15 7H21V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
         <h3>Crypto Analyst</h3>
         <p>Advanced cryptocurrency analysis with real-time technical indicators, price predictions, and market sentiment analysis.</p>
         <a href="crypto-analyst.html" class="tool-link">Launch Tool</a>
       </div>
 
       <div class="tool-card">
-        <div class="tool-icon">🤖</div>
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L13 4L15 5L13 6L12 8L11 6L9 5L11 4L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M18 8L20 9L22 8L20 7L18 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6 8L4 9L2 8L4 7L6 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 22V16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M17 13L19 15L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M7 13L5 15L7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
         <h3>AI Trading</h3>
         <p>Automated trading strategies powered by machine learning algorithms and real-time market data analysis.</p>
         <a href="ai-trading.html" class="tool-link">Coming Soon</a>
       </div>
 
       <div class="tool-card">
-        <div class="tool-icon">📈</div>
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 6H21V18H3V6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M7 14H11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M15 14H17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
         <h3>Portfolio Manager</h3>
         <p>Intelligent portfolio management with risk assessment, rebalancing suggestions, and performance analytics.</p>
         <a href="portfolio.html" class="tool-link">Coming Soon</a>
       </div>
 
       <div class="tool-card">
-        <div class="tool-icon">🔍</div>
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+            <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
         <h3>Market Scanner</h3>
         <p>Real-time market scanning for opportunities, anomalies, and emerging trends across multiple exchanges.</p>
         <a href="scanner.html" class="tool-link">Coming Soon</a>
       </div>
 
       <div class="tool-card">
-        <div class="tool-icon">💬</div>
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 12H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 8V16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </div>
         <h3>Sentiment Analysis</h3>
         <p>Social media and news sentiment analysis to gauge market mood and predict price movements.</p>
         <a href="sentiment.html" class="tool-link">Coming Soon</a>
       </div>
 
       <div class="tool-card">
-        <div class="tool-icon">🛡️</div>
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 16V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
         <h3>Risk Assessment</h3>
         <p>Comprehensive risk analysis tools for portfolio protection and intelligent position sizing.</p>
         <a href="risk.html" class="tool-link">Coming Soon</a>
@@ -616,25 +632,6 @@
         Powering the CaesariumX ecosystem with utility, governance, and premium feature access.
       </p>
 
-      <div class="token-metrics">
-        <div class="metric-card">
-          <div class="metric-value">$0.85</div>
-          <div class="metric-label">Current Price</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-value">+23.5%</div>
-          <div class="metric-label">24H Change</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-value">$42M</div>
-          <div class="metric-label">Market Cap</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-value">#285</div>
-          <div class="metric-label">Market Rank</div>
-        </div>
-      </div>
-
       <div class="contract-info">
         <div class="contract-address">
           0x699133f4Fe4eD7232B88f1520927be03D26540FC
@@ -642,7 +639,6 @@
         <div class="contract-links">
           <a href="https://etherscan.io/address/0x699133f4Fe4eD7232B88f1520927be03D26540FC" target="_blank" class="contract-link">View on Etherscan</a>
           <a href="public-sale.html" class="contract-link">Join Public Sale</a>
-          <a href="#" class="contract-link">Add to Wallet</a>
         </div>
       </div>
     </div>
@@ -653,9 +649,6 @@
     <div class="social-links">
       <a href="https://x.com/CaesariumX" target="_blank" class="social-link">X (Twitter)</a>
       <a href="https://discord.gg/2nwABWxR" target="_blank" class="social-link">Discord</a>
-      <a href="#" target="_blank" class="social-link">Telegram</a>
-      <a href="#" target="_blank" class="social-link">GitHub</a>
-      <a href="#" target="_blank" class="social-link">Medium</a>
     </div>
   </section>
 
@@ -699,7 +692,7 @@
         
         // Update ticker text (simplified)
         const symbol = ticker.textContent.split(' ')[0];
-        const basePrice = symbol === 'BTC' ? 42150 : symbol === 'ETH' ? 2850 : symbol === 'CRX' ? 0.85 : symbol === 'SOL' ? 98.5 : 1.25;
+        const basePrice = symbol === 'BTC' ? 42150 : symbol === 'ETH' ? 2850 : symbol === 'SOL' ? 98.5 : symbol === 'AI' ? 1.25 : 0.62;
         const newPrice = (basePrice * (1 + change/100)).toFixed(2);
         
         ticker.textContent = `${symbol} $${newPrice} ${isPositive ? '▲' : '▼'} ${Math.abs(newChange)}%`;
