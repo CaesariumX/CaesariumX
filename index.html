@@ -1,706 +1,1782 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CaesariumX - AI Tools Platform</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="CoinMind AI - Professional Crypto Analysis Platform"
+    />
+    <title>CoinMind AI - Crypto Analysis</title>
+    <style>
+      /* App.css - Complete Crypto Analyst Dashboard */
 
-    :root {
-      --primary: #ffffff;
-      --primary-dark: #e0e0e0;
-      --secondary: #000000;
-      --bg-dark: #000000;
-      --bg-darker: #0a0a0a;
-      --bg-card: #111111;
-      --bg-card-hover: #1a1a1a;
-      --text-primary: #ffffff;
-      --text-secondary: #b0b0b0;
-      --text-muted: #666666;
-      --border: #333333;
-      --border-light: #444444;
-      --success: #00ff00;
-      --danger: #ff0000;
-      --shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.7);
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
-      background: var(--bg-dark);
-      color: var(--text-primary);
-      line-height: 1.6;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    /* Crypto Background */
-    .crypto-background {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(45deg, #000000 0%, #0a0a0a 50%, #000000 100%);
-      z-index: -2;
-      overflow: hidden;
-    }
-
-    .crypto-ticker {
-      position: absolute;
-      white-space: nowrap;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: rgba(255, 255, 255, 0.1);
-      animation: tickerScroll 20s linear infinite;
-    }
-
-    .crypto-ticker:nth-child(1) { top: 10%; animation-delay: 0s; }
-    .crypto-ticker:nth-child(2) { top: 20%; animation-delay: -2s; }
-    .crypto-ticker:nth-child(3) { top: 30%; animation-delay: -4s; }
-    .crypto-ticker:nth-child(4) { top: 40%; animation-delay: -6s; }
-    .crypto-ticker:nth-child(5) { top: 50%; animation-delay: -8s; }
-
-    @keyframes tickerScroll {
-      0% { transform: translateX(-100vw); }
-      100% { transform: translateX(100vw); }
-    }
-
-    .price-up {
-      color: rgba(0, 255, 0, 0.1) !important;
-    }
-
-    .price-down {
-      color: rgba(255, 0, 0, 0.1) !important;
-    }
-
-    .grid-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: 
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 50px 50px;
-      z-index: -1;
-      pointer-events: none;
-    }
-
-    /* Header */
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.5rem 2rem;
-      background-color: var(--bg-card);
-      border-bottom: 1px solid var(--border);
-      position: relative;
-      backdrop-filter: blur(10px);
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .logo img {
-      height: 40px;
-      transition: transform 0.3s ease;
-    }
-
-    .logo:hover img {
-      transform: scale(1.05);
-    }
-
-    .logo-text {
-      font-size: 1.5rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    .logo-text span {
-      color: var(--primary);
-    }
-
-    /* Navigation */
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      align-items: center;
-    }
-
-    .nav-links a {
-      padding: 0.75rem 1.5rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      transition: all 0.3s ease;
-      font-size: 0.9rem;
-    }
-
-    .nav-links a:hover {
-      background: var(--text-primary);
-      color: var(--bg-dark);
-      transform: translateY(-2px);
-    }
-
-    .nav-links .primary {
-      background: var(--text-primary);
-      color: var(--bg-dark);
-    }
-
-    .nav-links .primary:hover {
-      background: var(--primary-dark);
-    }
-
-    .menu-btn {
-      display: none;
-      flex-direction: column;
-      gap: 4px;
-      cursor: pointer;
-      padding: 0.5rem;
-    }
-
-    .menu-btn div {
-      width: 25px;
-      height: 3px;
-      background: var(--text-primary);
-      transition: 0.3s;
-    }
-
-    /* Hero Section */
-    .hero {
-      text-align: center;
-      padding: 6rem 2rem 4rem;
-      border-bottom: 1px solid var(--border);
-      position: relative;
-    }
-
-    .hero-content {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .hero h1 {
-      font-size: 4rem;
-      font-weight: 800;
-      margin-bottom: 1rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    .tagline {
-      font-size: 1.5rem;
-      color: var(--text-secondary);
-      margin-bottom: 3rem;
-      font-weight: 500;
-      letter-spacing: 0.05em;
-    }
-
-    /* AI Tools Grid */
-    .ai-tools {
-      padding: 4rem 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .ai-tools h2 {
-      text-align: center;
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 3rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    .tools-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 2rem;
-      margin-bottom: 4rem;
-    }
-
-    .tool-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2rem;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      backdrop-filter: blur(10px);
-    }
-
-    .tool-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-      transition: left 0.5s ease;
-    }
-
-    .tool-card:hover::before {
-      left: 100%;
-    }
-
-    .tool-card:hover {
-      transform: translateY(-8px);
-      border-color: var(--border-light);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .tool-icon {
-      width: 60px;
-      height: 60px;
-      margin: 0 auto 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .tool-icon svg {
-      width: 100%;
-      height: 100%;
-      filter: brightness(0) invert(1);
-    }
-
-    .tool-card h3 {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      text-align: center;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .tool-card p {
-      color: var(--text-secondary);
-      text-align: center;
-      margin-bottom: 1.5rem;
-      line-height: 1.6;
-    }
-
-    .tool-link {
-      display: block;
-      text-align: center;
-      padding: 0.75rem 1.5rem;
-      background: var(--text-primary);
-      color: var(--bg-dark);
-      border-radius: 8px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      transition: all 0.3s ease;
-    }
-
-    .tool-link:hover {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
-    }
-
-    /* Token Info Section */
-    .token-section {
-      padding: 4rem 2rem;
-      background: var(--bg-card);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .token-content {
-      max-width: 800px;
-      margin: 0 auto;
-      text-align: center;
-    }
-
-    .token-content h2 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 2rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    .contract-info {
-      background: var(--bg-dark);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.5rem;
-      margin: 2rem 0;
-    }
-
-    .contract-address {
-      font-family: monospace;
-      word-break: break-all;
-      color: var(--text-secondary);
-      margin-bottom: 1rem;
-      font-size: 0.9rem;
-    }
-
-    .contract-links {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .contract-link {
-      padding: 0.5rem 1rem;
-      background: var(--text-primary);
-      color: var(--bg-dark);
-      border-radius: 6px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      font-size: 0.8rem;
-      transition: all 0.3s ease;
-    }
-
-    .contract-link:hover {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
-    }
-
-    /* Social Links */
-    .social-section {
-      padding: 4rem 2rem;
-      text-align: center;
-    }
-
-    .social-section h2 {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 2rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    .social-links {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .social-link {
-      padding: 1rem 2rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      transition: all 0.3s ease;
-    }
-
-    .social-link:hover {
-      background: var(--text-primary);
-      color: var(--bg-dark);
-      transform: translateY(-2px);
-    }
-
-    /* Footer */
-    footer {
-      text-align: center;
-      padding: 3rem 2rem;
-      background: var(--bg-card);
-      border-top: 1px solid var(--border);
-      color: var(--text-muted);
-    }
-
-    .footer-content {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 2rem;
-      justify-content: center;
-      margin: 2rem 0;
-      flex-wrap: wrap;
-    }
-
-    .footer-link {
-      color: var(--text-secondary);
-      transition: color 0.3s ease;
-    }
-
-    .footer-link:hover {
-      color: var(--text-primary);
-    }
-
-    /* Mobile Styles */
-    @media (max-width: 768px) {
-      .menu-btn {
-        display: flex;
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
 
-      .nav-links {
-        display: none;
+      :root {
+        --primary: #ffffff;
+        --primary-dark: #e0e0e0;
+        --secondary: #000000;
+        --bg-dark: #000000;
+        --bg-darker: #0a0a0a;
+        --bg-card: #111111;
+        --bg-card-hover: #1a1a1a;
+        --text-primary: #ffffff;
+        --text-secondary: #b0b0b0;
+        --text-muted: #666666;
+        --border: #333333;
+        --border-light: #444444;
+        --success: #00ff00;
+        --danger: #ff0000;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+        --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.7);
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+        background: var(--bg-dark);
+        color: var(--text-primary);
+        line-height: 1.6;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      #root {
+        min-height: 100vh;
+      }
+
+      .App {
+        min-height: 100vh;
+        padding: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+        position: relative;
+      }
+
+      /* Live Crypto Background */
+      .crypto-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, #000000 0%, #0a0a0a 50%, #000000 100%);
+        z-index: -2;
+        overflow: hidden;
+      }
+
+      .crypto-ticker {
         position: absolute;
-        top: 100%;
+        white-space: nowrap;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.1);
+        animation: tickerScroll 20s linear infinite;
+      }
+
+      .crypto-ticker:nth-child(1) { top: 10%; animation-delay: 0s; }
+      .crypto-ticker:nth-child(2) { top: 20%; animation-delay: -2s; }
+      .crypto-ticker:nth-child(3) { top: 30%; animation-delay: -4s; }
+      .crypto-ticker:nth-child(4) { top: 40%; animation-delay: -6s; }
+      .crypto-ticker:nth-child(5) { top: 50%; animation-delay: -8s; }
+
+      @keyframes tickerScroll {
+        0% { transform: translateX(-100vw); }
+        100% { transform: translateX(100vw); }
+      }
+
+      .price-up {
+        color: rgba(0, 255, 0, 0.1) !important;
+      }
+
+      .price-down {
+        color: rgba(255, 0, 0, 0.1) !important;
+      }
+
+      /* Grid Pattern Overlay */
+      .grid-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+          linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      /* Header */
+      header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding: 2rem 0;
+        position: relative;
+      }
+
+      .logo {
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+
+      .logo span {
+        color: var(--text-primary);
+        position: relative;
+      }
+
+      .logo span::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--text-primary);
+      }
+
+      .powered {
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        font-weight: 500;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+      }
+
+      /* Search Container */
+      .search-container {
+        display: flex;
+        gap: 1rem;
+        max-width: 500px;
+        margin: 0 auto 3rem;
+        position: relative;
+      }
+
+      .search-container input {
+        flex: 1;
+        padding: 1rem 1.25rem;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--bg-card);
+        color: var(--text-primary);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+      }
+
+      .search-container input:focus {
+        outline: none;
+        border-color: var(--text-primary);
+        background: var(--bg-card-hover);
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+      }
+
+      .search-container input::placeholder {
+        color: var(--text-muted);
+      }
+
+      .search-container button {
+        padding: 1rem 2rem;
+        background: var(--text-primary);
+        color: var(--bg-dark);
+        border: none;
+        border-radius: 8px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .search-container button:hover:not(:disabled) {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .search-container button:disabled {
+        background: var(--border);
+        color: var(--text-muted);
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      /* 3-Column Coin Grid */
+      .top-coins {
+        margin-bottom: 3rem;
+      }
+
+      .top-coins h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 2rem;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-primary);
+      }
+
+      .coins-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+      }
+
+      .coin-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        position: relative;
+        backdrop-filter: blur(10px);
+      }
+
+      .coin-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.5s ease;
+      }
+
+      .coin-card:hover::before {
+        left: 100%;
+      }
+
+      .coin-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--border-light);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .coin-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .coin-header img {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+      }
+
+      .coin-info h3 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+        word-wrap: break-word;
+      }
+
+      .coin-info p {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .coin-price {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        word-wrap: break-word;
+      }
+
+      .coin-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .stat {
+        text-align: center;
+        padding: 0.75rem;
+        background: var(--bg-dark);
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+
+      .stat-label {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        margin-bottom: 0.25rem;
+        word-wrap: break-word;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .stat-value {
+        font-size: 0.9rem;
+        font-weight: 700;
+        word-wrap: break-word;
+      }
+
+      .stat-value.positive {
+        color: var(--success);
+      }
+
+      .stat-value.negative {
+        color: var(--danger);
+      }
+
+      .coin-actions {
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      .action-btn {
+        flex: 1;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .btn-primary {
+        background: var(--text-primary);
+        color: var(--bg-dark);
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: var(--text-primary);
+        border-color: var(--text-primary);
+      }
+
+      .btn-secondary:hover {
+        background: var(--text-primary);
+        color: var(--bg-dark);
+        transform: translateY(-2px);
+      }
+
+      /* Modal */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
         left: 0;
         right: 0;
-        background: var(--bg-card);
-        flex-direction: column;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(5px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
         padding: 1rem;
+      }
+
+      .modal {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 2rem;
+        max-width: 500px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        backdrop-filter: blur(20px);
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: var(--bg-dark);
+        border: 1px solid var(--border);
+        color: var(--text-primary);
+        font-size: 1.25rem;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+      }
+
+      .close-btn:hover {
+        background: var(--text-primary);
+        color: var(--bg-dark);
+      }
+
+      .modal-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
         border-bottom: 1px solid var(--border);
       }
 
-      .nav-links.active {
+      .modal-header img {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        margin-bottom: 1rem;
+        border: 1px solid var(--border);
+      }
+
+      .modal-header h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+        word-wrap: break-word;
+      }
+
+      .modal-header p {
+        color: var(--text-secondary);
+        word-wrap: break-word;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .modal-body {
         display: flex;
-      }
-
-      .hero h1 {
-        font-size: 2.5rem;
-      }
-
-      .tagline {
-        font-size: 1.2rem;
-      }
-
-      .tools-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .contract-links {
         flex-direction: column;
-        align-items: center;
+        gap: 1.5rem;
       }
 
-      .social-links {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .footer-links {
-        flex-direction: column;
+      .price-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
         gap: 1rem;
       }
-    }
-  </style>
-</head>
-<body>
-  <!-- Crypto Background -->
-  <div class="crypto-background">
-    <div class="grid-overlay"></div>
-    <div class="crypto-ticker price-up">BTC $42,150 ▲ 2.34%</div>
-    <div class="crypto-ticker price-down">ETH $2,850 ▼ 1.67%</div>
-    <div class="crypto-ticker price-up">SOL $98.50 ▲ 0.89%</div>
-    <div class="crypto-ticker price-down">AI $1.25 ▼ 1.45%</div>
-    <div class="crypto-ticker price-up">XRP $0.62 ▲ 3.21%</div>
-  </div>
 
-  <header>
-    <div class="logo">
-      <img src="https://postimg.cc/fJxzjvHy" alt="CaesariumX Logo">
-      <div class="logo-text">CAESARIUM<span>X</span></div>
-    </div>
+      .price-info p {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 1rem;
+        background: var(--bg-dark);
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
 
-    <div class="menu-btn" onclick="toggleMenu()">
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
+      .price-info strong {
+        color: var(--text-muted);
+        font-size: 0.75rem;
+        font-weight: 600;
+        word-wrap: break-word;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
 
-    <nav class="nav-links" id="navLinks">
-      <a href="#ai-tools">AI Tools</a>
-      <a href="#token">Token</a>
-      <a href="#social">Community</a>
-      <a href="CaesariumX_Whitepaper.pdf" download class="primary">Whitepaper</a>
-      <a href="public-sale.html" class="primary">Public Sale</a>
-    </nav>
-  </header>
+      .ai-summary {
+        background: var(--bg-dark);
+        padding: 1.5rem;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
 
-  <section class="hero">
-    <div class="hero-content">
-      <h1>CAESARIUM X</h1>
-      <div class="tagline">AI Tools Platform • Power to the Holders</div>
-      <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
-        Advanced AI tools platform combining cryptocurrency analysis, trading automation, and intelligent market insights.
-      </p>
-    </div>
-  </section>
+      .ai-summary h4 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        word-wrap: break-word;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
 
-  <section class="ai-tools" id="ai-tools">
-    <h2>AI Tools Suite</h2>
-    <div class="tools-grid">
-      <div class="tool-card">
-        <div class="tool-icon">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 17L9 11L13 15L21 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M15 7H21V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <h3>Crypto Analyst</h3>
-        <p>Advanced cryptocurrency analysis with real-time technical indicators, price predictions, and market sentiment analysis.</p>
-        <a href="./crypto-analyst/index.html" class="tool-link">Launch Tool</a>
-      </div>
+      .ai-summary p {
+        color: var(--text-secondary);
+        line-height: 1.6;
+        word-wrap: break-word;
+      }
 
-      <div class="tool-card">
-        <div class="tool-icon">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L13 4L15 5L13 6L12 8L11 6L9 5L11 4L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M18 8L20 9L22 8L20 7L18 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M6 8L4 9L2 8L4 7L6 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M12 22V16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M17 13L19 15L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M7 13L5 15L7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <h3>AI Trading</h3>
-        <p>Automated trading strategies powered by machine learning algorithms and real-time market data analysis.</p>
-        <a href="ai-trading.html" class="tool-link">Coming Soon</a>
-      </div>
+      /* Advanced Analysis Page */
+      .analysis-page {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+      }
 
-      <div class="tool-card">
-        <div class="tool-icon">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 6H21V18H3V6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M7 14H11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M15 14H17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <h3>Portfolio Manager</h3>
-        <p>Intelligent portfolio management with risk assessment, rebalancing suggestions, and performance analytics.</p>
-        <a href="portfolio.html" class="tool-link">Coming Soon</a>
-      </div>
+      .back-button {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        color: var(--text-primary);
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-bottom: 2rem;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 700;
+      }
 
-      <div class="tool-card">
-        <div class="tool-icon">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-            <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <h3>Market Scanner</h3>
-        <p>Real-time market scanning for opportunities, anomalies, and emerging trends across multiple exchanges.</p>
-        <a href="scanner.html" class="tool-link">Coming Soon</a>
-      </div>
+      .back-button:hover {
+        background: var(--text-primary);
+        color: var(--bg-dark);
+        transform: translateY(-2px);
+      }
 
-      <div class="tool-card">
-        <div class="tool-icon">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8 12H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M12 8V16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-          </svg>
-        </div>
-        <h3>Sentiment Analysis</h3>
-        <p>Social media and news sentiment analysis to gauge market mood and predict price movements.</p>
-        <a href="sentiment.html" class="tool-link">Coming Soon</a>
-      </div>
+      .analysis-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding: 0 1rem;
+      }
 
-      <div class="tool-card">
-        <div class="tool-icon">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
-            <path d="M12 16V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <h3>Risk Assessment</h3>
-        <p>Comprehensive risk analysis tools for portfolio protection and intelligent position sizing.</p>
-        <a href="risk.html" class="tool-link">Coming Soon</a>
-      </div>
-    </div>
-  </section>
+      .analysis-header img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        margin-bottom: 1rem;
+        border: 1px solid var(--border);
+      }
 
-  <section class="token-section" id="token">
-    <div class="token-content">
-      <h2>$CRX Token</h2>
-      <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 2rem;">
-        Powering the CaesariumX ecosystem with utility, governance, and premium feature access.
-      </p>
+      .analysis-header h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        word-wrap: break-word;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
 
-      <div class="contract-info">
-        <div class="contract-address">
-          0x699133f4Fe4eD7232B88f1520927be03D26540FC
-        </div>
-        <div class="contract-links">
-          <a href="https://etherscan.io/address/0x699133f4Fe4eD7232B88f1520927be03D26540FC" target="_blank" class="contract-link">View on Etherscan</a>
-          <a href="public-sale.html" class="contract-link">Join Public Sale</a>
-        </div>
-      </div>
-    </div>
-  </section>
+      .analysis-header p {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        word-wrap: break-word;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
 
-  <section class="social-section" id="social">
-    <h2>Join Our Community</h2>
-    <div class="social-links">
-      <a href="https://x.com/CaesariumX" target="_blank" class="social-link">X (Twitter)</a>
-      <a href="https://discord.gg/2nwABWxR" target="_blank" class="social-link">Discord</a>
-    </div>
-  </section>
+      .analysis-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+      }
 
-  <footer>
-    <div class="footer-content">
-      <div class="footer-links">
-        <a href="#ai-tools" class="footer-link">AI Tools</a>
-        <a href="#token" class="footer-link">Token</a>
-        <a href="#social" class="footer-link">Community</a>
-        <a href="CaesariumX_Whitepaper.pdf" download class="footer-link">Whitepaper</a>
-        <a href="public-sale.html" class="footer-link">Public Sale</a>
-      </div>
-      <p>&copy; 2025 CaesariumX • AI Tools Platform</p>
-      <p style="margin-top: 0.5rem; color: var(--text-muted);">
-        Contact: <a href="mailto:caesariumx@outlook.com" style="color: var(--text-secondary);">caesariumx@outlook.com</a>
-      </p>
-    </div>
-  </footer>
+      .analysis-section {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+      }
 
-  <script>
-    function toggleMenu() {
-      document.getElementById('navLinks').classList.toggle('active');
-    }
+      .analysis-section h3 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 0.5rem;
+        word-wrap: break-word;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
 
-    // Generate random crypto ticker updates
-    function updateTickers() {
-      const tickers = document.querySelectorAll('.crypto-ticker');
-      tickers.forEach(ticker => {
-        const change = (Math.random() - 0.5) * 10;
-        const newChange = change.toFixed(2);
-        const isPositive = change >= 0;
-        
-        if (ticker.classList.contains('price-up')) {
-          ticker.classList.remove('price-up');
+      /* Chart Container */
+      .chart-container {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+      }
+
+      /* Metrics Grid */
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+      }
+
+      .metric-card {
+        background: var(--bg-dark);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 1rem;
+        text-align: center;
+        min-height: 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden;
+        transition: all 0.2s ease;
+      }
+
+      .metric-card:hover {
+        border-color: var(--border-light);
+        transform: translateY(-2px);
+      }
+
+      .metric-value {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+
+      .metric-label {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      /* Technical Indicators */
+      .technical-indicators {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .indicator {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        background: var(--bg-dark);
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        overflow: hidden;
+        transition: all 0.2s ease;
+      }
+
+      .indicator:hover {
+        border-color: var(--border-light);
+      }
+
+      .indicator span:first-child {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        word-wrap: break-word;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .indicator-value {
+        font-size: 0.9rem;
+        font-weight: 700;
+        word-wrap: break-word;
+      }
+
+      .indicator-value.positive {
+        color: var(--success);
+      }
+
+      .indicator-value.negative {
+        color: var(--danger);
+      }
+
+      /* Support & Resistance Levels */
+      .levels-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-top: 1rem;
+      }
+
+      .levels-section h4 {
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .level-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        background: var(--bg-dark);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        transition: all 0.2s ease;
+      }
+
+      .level-item:hover {
+        border-color: var(--border-light);
+        transform: translateY(-1px);
+      }
+
+      .level-label {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .level-value {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+
+      /* Market Metrics */
+      .market-metrics {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .market-metric {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        background: var(--bg-dark);
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        transition: all 0.2s ease;
+      }
+
+      .market-metric:hover {
+        border-color: var(--border-light);
+      }
+
+      .metric-tag {
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        background: var(--border);
+      }
+
+      .metric-tag.positive {
+        background: rgba(0, 255, 0, 0.2);
+        color: var(--success);
+      }
+
+      .metric-tag.negative {
+        background: rgba(255, 0, 0, 0.2);
+        color: var(--danger);
+      }
+
+      /* Trading Signals */
+      .trading-signals {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .signal {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        background: var(--bg-dark);
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        transition: all 0.2s ease;
+      }
+
+      .signal:hover {
+        border-color: var(--border-light);
+      }
+
+      .signal-value {
+        font-weight: 700;
+      }
+
+      .signal-value.positive {
+        color: var(--success);
+      }
+
+      .signal-value.negative {
+        color: var(--danger);
+      }
+
+      /* Moving Averages */
+      .moving-averages {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .ma-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        background: var(--bg-dark);
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        transition: all 0.2s ease;
+      }
+
+      .ma-item:hover {
+        border-color: var(--border-light);
+      }
+
+      /* Loading and Error States */
+      .loading-spinner {
+        text-align: center;
+        padding: 3rem;
+      }
+
+      .spinner {
+        width: 44px;
+        height: 44px;
+        border: 3px solid var(--border);
+        border-left: 3px solid var(--text-primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .error-message {
+        background: rgba(255, 0, 0, 0.1);
+        border: 1px solid rgba(255, 0, 0, 0.3);
+        color: var(--danger);
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+        margin-bottom: 2rem;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+      }
+
+      .error-message p {
+        word-wrap: break-word;
+      }
+
+      .error-message button {
+        background: var(--danger);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        margin-top: 0.5rem;
+        cursor: pointer;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .error-message button:hover {
+        background: #cc0000;
+        transform: translateY(-2px);
+      }
+
+      .info-text {
+        text-align: center;
+        color: var(--text-muted);
+        padding: 2rem;
+        word-wrap: break-word;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .App {
+          padding: 1rem;
         }
-        if (ticker.classList.contains('price-down')) {
-          ticker.classList.remove('price-down');
+        
+        .coins-grid {
+          grid-template-columns: 1fr;
         }
         
-        ticker.classList.add(isPositive ? 'price-up' : 'price-down');
+        .analysis-grid {
+          grid-template-columns: 1fr;
+        }
         
-        // Update ticker text (simplified)
-        const symbol = ticker.textContent.split(' ')[0];
-        const basePrice = symbol === 'BTC' ? 42150 : symbol === 'ETH' ? 2850 : symbol === 'SOL' ? 98.5 : symbol === 'AI' ? 1.25 : 0.62;
-        const newPrice = (basePrice * (1 + change/100)).toFixed(2);
+        .logo {
+          font-size: 2rem;
+        }
         
-        ticker.textContent = `${symbol} $${newPrice} ${isPositive ? '▲' : '▼'} ${Math.abs(newChange)}%`;
-      });
-    }
+        .search-container {
+          flex-direction: column;
+        }
+        
+        .analysis-header h1 {
+          font-size: 1.5rem;
+        }
+        
+        .metric-value {
+          font-size: 1rem;
+        }
+        
+        .levels-grid {
+          grid-template-columns: 1fr;
+        }
+        
+        .analysis-section {
+          padding: 1rem;
+        }
+      }
 
-    // Update tickers every 5 seconds
-    setInterval(updateTickers, 5000);
-  </script>
-</body>
+      @media (max-width: 480px) {
+        .metrics-grid {
+          grid-template-columns: 1fr;
+        }
+        
+        .coin-stats {
+          grid-template-columns: 1fr;
+        }
+        
+        .coin-actions {
+          flex-direction: column;
+        }
+        
+        .crypto-ticker {
+          font-size: 0.6rem;
+        }
+        
+        .modal {
+          padding: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+      // Your React App.js code goes here
+      const { useState, useEffect } = React;
+
+      // API URLs
+      const API_BASE = "https://api.coingecko.com/api/v3";
+      const TOP_COINS_URL = `${API_BASE}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=30&page=1`;
+      const SEARCH_URL = `${API_BASE}/search`;
+      const COIN_DETAILS_URL = `${API_BASE}/coins`;
+
+      // Generate realistic technical analysis from real data
+      const generateTechnicalAnalysis = (coinData) => {
+        const price = coinData.current_price || coinData.market_data?.current_price?.usd || 0;
+        const change24h = coinData.price_change_percentage_24h || coinData.market_data?.price_change_percentage_24h || 0;
+        const volume = coinData.total_volume || coinData.market_data?.total_volume?.usd || 0;
+        const marketCap = coinData.market_cap || coinData.market_data?.market_cap?.usd || 0;
+        const high24h = coinData.high_24h || coinData.market_data?.high_24h?.usd || price * 1.02;
+        const low24h = coinData.low_24h || coinData.market_data?.low_24h?.usd || price * 0.98;
+        const marketRank = coinData.market_cap_rank || 999;
+        
+        // Calculate realistic technical indicators
+        const volatility = Math.abs(change24h);
+        const avgVolume = volume / 24; // Approximate hourly volume
+        
+        // RSI Calculation (simplified)
+        const rsi = 50 + (change24h * 0.5);
+        const normalizedRSI = Math.max(0, Math.min(100, rsi));
+        
+        // MACD Calculation (simplified)
+        const macdLine = change24h * 0.8;
+        const signalLine = change24h * 0.6;
+        const macdHistogram = macdLine - signalLine;
+        
+        // Support and Resistance Levels
+        const supportLevels = [
+          (price * 0.95).toFixed(2),
+          (price * 0.90).toFixed(2),
+          (price * 0.85).toFixed(2)
+        ];
+        
+        const resistanceLevels = [
+          (price * 1.05).toFixed(2),
+          (price * 1.10).toFixed(2),
+          (price * 1.15).toFixed(2)
+        ];
+        
+        // Moving Averages (simplified)
+        const ma7 = price * (1 + (change24h * 0.7) / 100);
+        const ma25 = price * (1 + (change24h * 0.4) / 100);
+        const ma50 = price * (1 + (change24h * 0.2) / 100);
+        
+        // Volume Analysis
+        const volumeChange = ((volume - (marketCap * 0.05)) / (marketCap * 0.05)) * 100;
+        const volumeSentiment = volumeChange > 20 ? "STRONG" : volumeChange > 0 ? "MODERATE" : "WEAK";
+        
+        // Market Sentiment
+        let overallSentiment = "NEUTRAL";
+        if (change24h > 10 && volumeChange > 15) overallSentiment = "STRONGLY BULLISH";
+        else if (change24h > 5) overallSentiment = "BULLISH";
+        else if (change24h < -10 && volumeChange > 15) overallSentiment = "STRONGLY BEARISH";
+        else if (change24h < -5) overallSentiment = "BEARISH";
+        
+        return {
+          priceMetrics: {
+            current: price,
+            change24h: change24h,
+            high24h: high24h,
+            low24h: low24h,
+            volume: volume,
+            marketCap: marketCap,
+            marketRank: marketRank
+          },
+          technicalIndicators: {
+            rsi: normalizedRSI.toFixed(1),
+            rsiSignal: normalizedRSI > 70 ? "OVERSOLD" : normalizedRSI < 30 ? "OVERBOUGHT" : "NEUTRAL",
+            macd: {
+              line: macdLine.toFixed(4),
+              signal: signalLine.toFixed(4),
+              histogram: macdHistogram.toFixed(4),
+              trend: macdHistogram > 0 ? "BULLISH" : "BEARISH"
+            },
+            movingAverages: {
+              ma7: ma7.toFixed(2),
+              ma25: ma25.toFixed(2),
+              ma50: ma50.toFixed(2),
+              trend: ma7 > ma25 && ma25 > ma50 ? "BULLISH" : ma7 < ma25 && ma25 < ma50 ? "BEARISH" : "MIXED"
+            },
+            volatility: volatility.toFixed(1),
+            supportLevels: supportLevels,
+            resistanceLevels: resistanceLevels
+          },
+          marketAnalysis: {
+            sentiment: overallSentiment,
+            volumeStrength: volumeSentiment,
+            trendStrength: volatility > 15 ? "HIGH" : volatility > 8 ? "MODERATE" : "LOW",
+            marketPhase: change24h > 0 ? "ACCUMULATION" : "DISTRIBUTION"
+          },
+          tradingSignals: {
+            shortTerm: change24h > 5 ? "BUY" : change24h < -5 ? "SELL" : "HOLD",
+            mediumTerm: normalizedRSI > 60 ? "BULLISH" : normalizedRSI < 40 ? "BEARISH" : "NEUTRAL",
+            entryPoint: supportLevels[0],
+            exitPoint: resistanceLevels[0],
+            stopLoss: (price * 0.92).toFixed(2)
+          }
+        };
+      };
+
+      // Live Crypto Background Component
+      const CryptoBackground = () => {
+        const [tickerData, setTickerData] = useState([]);
+
+        useEffect(() => {
+          const cryptocurrencies = [
+            { symbol: "BTC", price: Math.random() * 50000 + 30000, change: (Math.random() - 0.5) * 20 },
+            { symbol: "ETH", price: Math.random() * 3000 + 1500, change: (Math.random() - 0.5) * 15 },
+            { symbol: "BNB", price: Math.random() * 600 + 200, change: (Math.random() - 0.5) * 12 },
+          ];
+
+          setTickerData(cryptocurrencies);
+
+          const interval = setInterval(() => {
+            setTickerData(prev => prev.map(coin => ({
+              ...coin,
+              price: coin.price * (1 + (Math.random() - 0.5) * 0.02),
+              change: (Math.random() - 0.5) * 20
+            })));
+          }, 3000);
+
+          return () => clearInterval(interval);
+        }, []);
+
+        return React.createElement('div', { className: "crypto-background" },
+          React.createElement('div', { className: "grid-overlay" }),
+          tickerData.map((coin, index) =>
+            React.createElement('div', {
+              key: coin.symbol,
+              className: `crypto-ticker ${coin.change >= 0 ? 'price-up' : 'price-down'}`
+            }, `${coin.symbol} $${coin.price.toFixed(2)} ${coin.change >= 0 ? '▲' : '▼'} ${Math.abs(coin.change).toFixed(2)}%`)
+          )
+        );
+      };
+
+      // TradingView Chart Component
+      const TradingViewChart = ({ symbol }) => {
+        return React.createElement('div', { className: "chart-container" },
+          React.createElement('iframe', {
+            src: `https://www.tradingview.com/widgetembed/?frameElementId=tradingview_${symbol}&symbol=${symbol}USD&interval=60&hidesidetoolbar=0&symboledit=0&saveimage=0&toolbarbg=0C0C0C&studies=RSI@tv-basicstudies&theme=dark&style=1&timezone=Etc%2FUTC&studies_overrides=%7B%7D&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=en&utm_source=localhost&utm_medium=widget&utm_campaign=chart&utm_term=${symbol}USD`,
+            style: {
+              width: '100%',
+              height: '400px',
+              border: 'none',
+              borderRadius: '8px'
+            },
+            title: `${symbol} Price Chart`
+          })
+        );
+      };
+
+      // Price History Chart (Simple SVG-based)
+      const PriceHistoryChart = ({ data }) => {
+        const prices = data || [100, 105, 102, 108, 115, 112, 118, 120, 125, 122];
+        const maxPrice = Math.max(...prices);
+        const minPrice = Math.min(...prices);
+        const chartHeight = 200;
+        const chartWidth = 400;
+        
+        const points = prices.map((price, index) => {
+          const x = (index / (prices.length - 1)) * chartWidth;
+          const y = chartHeight - ((price - minPrice) / (maxPrice - minPrice)) * chartHeight;
+          return `${x},${y}`;
+        }).join(' ');
+
+        return React.createElement('div', { className: "price-chart" },
+          React.createElement('svg', { 
+            width: "100%", 
+            height: "220", 
+            viewBox: `0 0 ${chartWidth} ${chartHeight + 20}` 
+          },
+            // Grid lines
+            [0, 0.25, 0.5, 0.75, 1].map((ratio, i) =>
+              React.createElement('line', {
+                key: i,
+                x1: "0",
+                y1: chartHeight * ratio,
+                x2: chartWidth,
+                y2: chartHeight * ratio,
+                stroke: "var(--border)",
+                strokeWidth: "1",
+                opacity: "0.3"
+              })
+            ),
+            
+            // Price line
+            React.createElement('polyline', {
+              fill: "none",
+              stroke: "var(--primary)",
+              strokeWidth: "2",
+              points: points
+            }),
+            
+            // Current price dot
+            React.createElement('circle', {
+              cx: chartWidth,
+              cy: chartHeight - ((prices[prices.length - 1] - minPrice) / (maxPrice - minPrice)) * chartHeight,
+              r: "4",
+              fill: "var(--primary)"
+            }),
+            
+            // Labels
+            React.createElement('text', {
+              x: "0",
+              y: chartHeight + 15,
+              fill: "var(--text-muted)",
+              fontSize: "10"
+            }, `$${minPrice.toFixed(0)}`),
+            React.createElement('text', {
+              x: chartWidth - 30,
+              y: chartHeight + 15,
+              fill: "var(--text-muted)",
+              fontSize: "10"
+            }, `$${maxPrice.toFixed(0)}`)
+          )
+        );
+      };
+
+      // Components
+      const LoadingSpinner = () => 
+        React.createElement('div', { className: "loading-spinner" },
+          React.createElement('div', { className: "spinner" }),
+          React.createElement('p', null, "LOADING MARKET DATA...")
+        );
+
+      const ErrorMessage = ({ message, onRetry }) => 
+        React.createElement('div', { className: "error-message" },
+          React.createElement('p', null, message),
+          onRetry && React.createElement('button', { onClick: onRetry }, "RETRY")
+        );
+
+      const CoinCard = ({ coin, onQuickSummary, onAdvancedAnalysis }) => 
+        React.createElement('div', { className: "coin-card" },
+          React.createElement('div', { className: "coin-header" },
+            React.createElement('img', { src: coin.image, alt: coin.name }),
+            React.createElement('div', { className: "coin-info" },
+              React.createElement('h3', null, coin.name),
+              React.createElement('p', null, coin.symbol.toUpperCase())
+            )
+          ),
+          
+          React.createElement('div', { className: "coin-price" },
+            `$${coin.current_price?.toLocaleString()}`
+          ),
+          
+          React.createElement('div', { className: "coin-stats" },
+            React.createElement('div', { className: "stat" },
+              React.createElement('div', { className: "stat-label" }, "24H Change"),
+              React.createElement('div', { 
+                className: `stat-value ${coin.price_change_percentage_24h >= 0 ? 'positive' : 'negative'}` 
+              }, `${coin.price_change_percentage_24h?.toFixed(2)}%`)
+            ),
+            React.createElement('div', { className: "stat" },
+              React.createElement('div', { className: "stat-label" }, "Market Cap"),
+              React.createElement('div', { className: "stat-value" },
+                `$${(coin.market_cap / 1000000).toFixed(0)}M`
+              )
+            )
+          ),
+          
+          React.createElement('div', { className: "coin-actions" },
+            React.createElement('button', {
+              className: "action-btn btn-primary",
+              onClick: () => onQuickSummary(coin.id)
+            }, "Quick Analysis"),
+            React.createElement('button', {
+              className: "action-btn btn-secondary",
+              onClick: () => onAdvancedAnalysis(coin.id)
+            }, "Advanced Analysis")
+          )
+        );
+
+      const SearchResultCard = ({ result, onQuickSummary, onAdvancedAnalysis }) => 
+        React.createElement('div', { className: "coin-card" },
+          React.createElement('div', { className: "coin-header" },
+            React.createElement('img', { src: result.large || result.thumb, alt: result.name }),
+            React.createElement('div', { className: "coin-info" },
+              React.createElement('h3', null, result.name),
+              React.createElement('p', null, result.symbol.toUpperCase())
+            )
+          ),
+          
+          React.createElement('div', { className: "coin-price" }, "Search Result"),
+          
+          React.createElement('div', { className: "coin-stats" },
+            React.createElement('div', { className: "stat" },
+              React.createElement('div', { className: "stat-label" }, "Market Cap Rank"),
+              React.createElement('div', { className: "stat-value" },
+                `#${result.market_cap_rank || "N/A"}`
+              )
+            ),
+            React.createElement('div', { className: "stat" },
+              React.createElement('div', { className: "stat-label" }, "ID"),
+              React.createElement('div', { className: "stat-value" }, result.id)
+            )
+          ),
+          
+          React.createElement('div', { className: "coin-actions" },
+            React.createElement('button', {
+              className: "action-btn btn-primary",
+              onClick: () => onQuickSummary(result.id)
+            }, "Quick Analysis"),
+            React.createElement('button', {
+              className: "action-btn btn-secondary",
+              onClick: () => onAdvancedAnalysis(result.id)
+            }, "Advanced Analysis")
+          )
+        );
+
+      const QuickSummaryModal = ({ coin, onClose }) => {
+        const [analysis, setAnalysis] = useState(null);
+        const [loading, setLoading] = useState(false);
+
+        useEffect(() => {
+          if (!coin) return;
+
+          const generateAnalysis = async () => {
+            setLoading(true);
+            try {
+              await new Promise(resolve => setTimeout(resolve, 800));
+              const technicalData = generateTechnicalAnalysis(coin);
+              setAnalysis(technicalData);
+            } catch (err) {
+              console.error("Analysis Error:", err);
+              const technicalData = generateTechnicalAnalysis(coin);
+              setAnalysis(technicalData);
+            } finally {
+              setLoading(false);
+            }
+          };
+
+          generateAnalysis();
+        }, [coin]);
+
+        if (!coin) return null;
+
+        return React.createElement('div', { className: "modal-overlay", onClick: onClose },
+          React.createElement('div', { className: "modal", onClick: (e) => e.stopPropagation() },
+            React.createElement('button', { className: "close-btn", onClick: onClose }, "✖"),
+            React.createElement('div', { className: "modal-header" },
+              React.createElement('img', { src: coin.image?.large || coin.image, alt: coin.name }),
+              React.createElement('h2', null, coin.name),
+              React.createElement('p', null, coin.symbol?.toUpperCase())
+            ),
+            React.createElement('div', { className: "modal-body" },
+              React.createElement('div', { className: "price-info" },
+                React.createElement('p', null,
+                  React.createElement('strong', null, "Current Price"),
+                  ` $${coin.market_data?.current_price?.usd?.toLocaleString() || coin.current_price?.toLocaleString()}`
+                ),
+                React.createElement('p', null,
+                  React.createElement('strong', null, "Market Cap"),
+                  ` $${coin.market_data?.market_cap?.usd?.toLocaleString() || coin.market_cap?.toLocaleString()}`
+                ),
+                React.createElement('p', null,
+                  React.createElement('strong', null, "24H Change"),
+                  React.createElement('span', { 
+                    className: coin.market_data?.price_change_percentage_24h >= 0 ? "positive" : "negative" 
+                  }, ` ${coin.market_data?.price_change_percentage_24h?.toFixed(2) || coin.price_change_percentage_24h?.toFixed(2)}%`)
+                )
+              ),
+              React.createElement('div', { className: "ai-summary" },
+                React.createElement('h4', null, "TECHNICAL OVERVIEW"),
+                loading ? 
+                  React.createElement('div', { style: { textAlign: 'center' } },
+                    React.createElement('div', { 
+                      className: "spinner", 
+                      style: { width: '30px', height: '30px', margin: '0 auto 1rem' } 
+                    }),
+                    React.createElement('p', null, "ANALYZING DATA...")
+                  ) : 
+                  analysis && React.createElement('div', { style: { lineHeight: '1.6' } },
+                    React.createElement('p', null,
+                      React.createElement('strong', null, "Market Sentiment:"), ` ${analysis.marketAnalysis.sentiment}`
+                    ),
+                    React.createElement('p', null,
+                      React.createElement('strong', null, "Trend Strength:"), ` ${analysis.marketAnalysis.trendStrength}`
+                    ),
+                    React.createElement('p', null,
+                      React.createElement('strong', null, "Volume:"), ` ${analysis.marketAnalysis.volumeStrength}`
+                    ),
+                    React.createElement('p', null,
+                      React.createElement('strong', null, "RSI:"), ` ${analysis.technicalIndicators.rsi} (${analysis.technicalIndicators.rsiSignal})`
+                    ),
+                    React.createElement('p', null,
+                      React.createElement('strong', null, "Recommendation:"), ` ${analysis.tradingSignals.shortTerm}`
+                    )
+                  )
+              )
+            )
+          )
+        );
+      };
+
+      const AdvancedAnalysisPage = ({ coin, onBack }) => {
+        const [analysis, setAnalysis] = useState(null);
+        const [loading, setLoading] = useState(false);
+
+        useEffect(() => {
+          if (!coin) return;
+
+          const generateAnalysis = async () => {
+            setLoading(true);
+            try {
+              await new Promise(resolve => setTimeout(resolve, 1000));
+              const technicalData = generateTechnicalAnalysis(coin);
+              setAnalysis(technicalData);
+            } catch (err) {
+              console.error("Analysis Error:", err);
+              const technicalData = generateTechnicalAnalysis(coin);
+              setAnalysis(technicalData);
+            } finally {
+              setLoading(false);
+            }
+          };
+
+          generateAnalysis();
+        }, [coin]);
+
+        if (!coin) return null;
+
+        return React.createElement('div', { className: "analysis-page" },
+          React.createElement(CryptoBackground),
+          React.createElement('button', { className: "back-button", onClick: onBack }, "BACK TO DASHBOARD"),
+          
+          React.createElement('div', { className: "analysis-header" },
+            React.createElement('img', { src: coin.image?.large || coin.image, alt: coin.name }),
+            React.createElement('h1', null, `${coin.name} Advanced Analysis`),
+            React.createElement('p', null, `${coin.symbol?.toUpperCase()} - Complete Technical Analysis`)
+          ),
+
+          loading ? 
+            React.createElement('div', { style: { textAlign: 'center', padding: '3rem' } },
+              React.createElement('div', { 
+                className: "spinner", 
+                style: { width: '40px', height: '40px', margin: '0 auto 1rem' } 
+              }),
+              React.createElement('p', null, "GENERATING COMPREHENSIVE ANALYSIS...")
+            ) : 
+            analysis && React.createElement('div', { className: "analysis-grid" },
+              // Price Chart
+              React.createElement('div', { className: "analysis-section", style: { gridColumn: '1 / -1' } },
+                React.createElement('h3', null, "PRICE CHART"),
+                React.createElement(TradingViewChart, { symbol: coin.symbol?.toUpperCase() })
+              ),
+
+              // Price Metrics
+              React.createElement('div', { className: "analysis-section" },
+                React.createElement('h3', null, "PRICE METRICS"),
+                React.createElement('div', { className: "metrics-grid" },
+                  React.createElement('div', { className: "metric-card" },
+                    React.createElement('div', { className: "metric-value" }, `$${analysis.priceMetrics.current.toLocaleString()}`),
+                    React.createElement('div', { className: "metric-label" }, "Current Price")
+                  ),
+                  React.createElement('div', { className: "metric-card" },
+                    React.createElement('div', { 
+                      className: `metric-value ${analysis.priceMetrics.change24h >= 0 ? 'positive' : 'negative'}` 
+                    }, `${analysis.priceMetrics.change24h >= 0 ? '+' : ''}${analysis.priceMetrics.change24h.toFixed(2)}%`),
+                    React.createElement('div', { className: "metric-label" }, "24H Change")
+                  ),
+                  React.createElement('div', { className: "metric-card" },
+                    React.createElement('div', { className: "metric-value" }, `$${analysis.priceMetrics.high24h.toLocaleString()}`),
+                    React.createElement('div', { className: "metric-label" }, "24H High")
+                  ),
+                  React.createElement('div', { className: "metric-card" },
+                    React.createElement('div', { className: "metric-value" }, `$${analysis.priceMetrics.low24h.toLocaleString()}`),
+                    React.createElement('div', { className: "metric-label" }, "24H Low")
+                  ),
+                  React.createElement('div', { className: "metric-card" },
+                    React.createElement('div', { className: "metric-value" }, `$${(analysis.priceMetrics.marketCap / 1000000000).toFixed(2)}B`),
+                    React.createElement('div', { className: "metric-label" }, "Market Cap")
+                  ),
+                  React.createElement('div', { className: "metric-card" },
+                    React.createElement('div', { className: "metric-value" }, `#${analysis.priceMetrics.marketRank}`),
+                    React.createElement('div', { className: "metric-label" }, "Market Rank")
+                  )
+                )
+              ),
+
+              // Technical Indicators
+              React.createElement('div', { className: "analysis-section" },
+                React.createElement('h3', null, "TECHNICAL INDICATORS"),
+                React.createElement('div', { className: "technical-indicators" },
+                  React.createElement('div', { className: "indicator" },
+                    React.createElement('span', null, "RSI (14)"),
+                    React.createElement('span', { 
+                      className: `indicator-value ${analysis.technicalIndicators.rsi > 70 ? 'negative' : analysis.technicalIndicators.rsi < 30 ? 'positive' : ''}` 
+                    }, analysis.technicalIndicators.rsi)
+                  ),
+                  React.createElement('div', { className: "indicator" },
+                    React.createElement('span', null, "MACD"),
+                    React.createElement('span', { 
+                      className: `indicator-value ${analysis.technicalIndicators.macd.trend === 'BULLISH' ? 'positive' : 'negative'}` 
+                    }, analysis.technicalIndicators.macd.line)
+                  ),
+                  React.createElement('div', { className: "indicator" },
+                    React.createElement('span', null, "MACD Signal"),
+                    React.createElement('span', { className: "indicator-value" }, analysis.technicalIndicators.macd.signal)
+                  ),
+                  React.createElement('div', { className: "indicator" },
+                    React.createElement('span', null, "MACD Histogram"),
+                    React.createElement('span', { 
+                      className: `indicator-value ${analysis.technicalIndicators.macd.histogram > 0 ? 'positive' : 'negative'}` 
+                    }, analysis.technicalIndicators.macd.histogram)
+                  ),
+                  React.createElement('div', { className: "indicator" },
+                    React.createElement('span', null, "Volatility"),
+                    React.createElement('span', { className: "indicator-value" }, `${analysis.technicalIndicators.volatility}%`)
+                  ),
+                  React.createElement('div', { className: "indicator" },
+                    React.createElement('span', null, "MA Trend"),
+                    React.createElement('span', { 
+                      className: `indicator-value ${analysis.technicalIndicators.movingAverages.trend === 'BULLISH' ? 'positive' : analysis.technicalIndicators.movingAverages.trend === 'BEARISH' ? 'negative' : ''}` 
+                    }, analysis.technicalIndicators.movingAverages.trend)
+                  )
+                )
+              ),
+
+              // Support & Resistance
+              React.createElement('div', { className: "analysis-section" },
+                React.createElement('h3', null, "SUPPORT & RESISTANCE"),
+                React.createElement('div', { className: "levels-grid" },
+                  React.createElement('div', { className: "levels-section" },
+                    React.createElement('h4', null, "Support Levels"),
+                    analysis.technicalIndicators.supportLevels.map((level, index) =>
+                      React.createElement('div', { key: index, className: "level-item" },
+                        React.createElement('span', { className: "level-label" }, `S${index + 1}`),
+                        React.createElement('span', { className: "level-value" }, `$${level}`)
+                      )
+                    )
+                  ),
+                  React.createElement('div', { className: "levels-section" },
+                    React.createElement('h4', null, "Resistance Levels"),
+                    analysis.technicalIndicators.resistanceLevels.map((level, index) =>
+                      React.createElement('div', { key: index, className: "level-item" },
+                        React.createElement('span', { className: "level-label" }, `R${index + 1}`),
+                        React.createElement('span', { className: "level-value" }, `$${level}`)
+                      )
+                    )
+                  )
+                )
+              ),
+
+              // Market Analysis
+              React.createElement('div', { className: "analysis-section" },
+                React.createElement('h3', null, "MARKET ANALYSIS"),
+                React.createElement('div', { className: "market-metrics" },
+                  React.createElement('div', { className: "market-metric" },
+                    React.createElement('span', null, "Overall Sentiment"),
+                    React.createElement('span', { 
+                      className: `metric-tag ${analysis.marketAnalysis.sentiment.includes('BULLISH') ? 'positive' : analysis.marketAnalysis.sentiment.includes('BEARISH') ? 'negative' : ''}` 
+                    }, analysis.marketAnalysis.sentiment)
+                  ),
+                  React.createElement('div', { className: "market-metric" },
+                    React.createElement('span', null, "Volume Strength"),
+                    React.createElement('span', { className: "metric-tag" }, analysis.marketAnalysis.volumeStrength)
+                  ),
+                  React.createElement('div', { className: "market-metric" },
+                    React.createElement('span', null, "Trend Strength"),
+                    React.createElement('span', { className: "metric-tag" }, analysis.marketAnalysis.trendStrength)
+                  ),
+                  React.createElement('div', { className: "market-metric" },
+                    React.createElement('span', null, "Market Phase"),
+                    React.createElement('span', { className: "metric-tag" }, analysis.marketAnalysis.marketPhase)
+                  )
+                )
+              ),
+
+              // Trading Signals
+              React.createElement('div', { className: "analysis-section" },
+                React.createElement('h3', null, "TRADING SIGNALS"),
+                React.createElement('div', { className: "trading-signals" },
+                  React.createElement('div', { className: "signal" },
+                    React.createElement('span', null, "Short Term"),
+                    React.createElement('span', { 
+                      className: `signal-value ${analysis.tradingSignals.shortTerm === 'BUY' ? 'positive' : analysis.tradingSignals.shortTerm === 'SELL' ? 'negative' : ''}` 
+                    }, analysis.tradingSignals.shortTerm)
+                  ),
+                  React.createElement('div', { className: "signal" },
+                    React.createElement('span', null, "Medium Term"),
+                    React.createElement('span', { 
+                      className: `signal-value ${analysis.tradingSignals.mediumTerm === 'BULLISH' ? 'positive' : analysis.tradingSignals.mediumTerm === 'BEARISH' ? 'negative' : ''}` 
+                    }, analysis.tradingSignals.mediumTerm)
+                  ),
+                  React.createElement('div', { className: "signal" },
+                    React.createElement('span', null, "Entry Point"),
+                    React.createElement('span', { className: "signal-value" }, `$${analysis.tradingSignals.entryPoint}`)
+                  ),
+                  React.createElement('div', { className: "signal" },
+                    React.createElement('span', null, "Exit Point"),
+                    React.createElement('span', { className: "signal-value" }, `$${analysis.tradingSignals.exitPoint}`)
+                  ),
+                  React.createElement('div', { className: "signal" },
+                    React.createElement('span', null, "Stop Loss"),
+                    React.createElement('span', { className: "signal-value" }, `$${analysis.tradingSignals.stopLoss}`)
+                  )
+                )
+              ),
+
+              // Moving Averages
+              React.createElement('div', { className: "analysis-section" },
+                React.createElement('h3', null, "MOVING AVERAGES"),
+                React.createElement('div', { className: "moving-averages" },
+                  React.createElement('div', { className: "ma-item" },
+                    React.createElement('span', null, "7-Day MA"),
+                    React.createElement('span', null, `$${analysis.technicalIndicators.movingAverages.ma7}`)
+                  ),
+                  React.createElement('div', { className: "ma-item" },
+                    React.createElement('span', null, "25-Day MA"),
+                    React.createElement('span', null, `$${analysis.technicalIndicators.movingAverages.ma25}`)
+                  ),
+                  React.createElement('div', { className: "ma-item" },
+                    React.createElement('span', null, "50-Day MA"),
+                    React.createElement('span', null, `$${analysis.technicalIndicators.movingAverages.ma50}`)
+                  )
+                )
+              )
+            )
+        );
+      };
+
+      // Main App
+      function App() {
+        const [query, setQuery] = useState("");
+        const [topCoins, setTopCoins] = useState([]);
+        const [searchResults, setSearchResults] = useState([]);
+        const [selectedCoin, setSelectedCoin] = useState(null);
+        const [view, setView] = useState("dashboard");
+        const [loading, setLoading] = useState(true);
+        const [searchLoading, setSearchLoading] = useState(false);
+        const [error, setError] = useState("");
+
+        useEffect(() => {
+          const fetchTopCoins = async () => {
+            try {
+              const res = await fetch(TOP_COINS_URL);
+              const data = await res.json();
+              setTopCoins(data);
+            } catch (err) {
+              setError("FAILED TO LOAD MARKET DATA");
+            } finally {
+              setLoading(false);
+            }
+          };
+          fetchTopCoins();
+        }, []);
+
+        const handleSearch = async () => {
+          if (!query.trim()) {
+            setSearchResults([]);
+            return;
+          }
+
+          setSearchLoading(true);
+          setError("");
+
+          try {
+            const response = await fetch(`${SEARCH_URL}?query=${encodeURIComponent(query)}`);
+            const data = await response.json();
+            
+            if (data.coins && data.coins.length > 0) {
+              setSearchResults(data.coins.slice(0, 5));
+            } else {
+              setSearchResults([]);
+              setError("NO COINS FOUND FOR YOUR SEARCH");
+            }
+          } catch (err) {
+            setError("SEARCH FAILED - PLEASE TRY AGAIN");
+            setSearchResults([]);
+          } finally {
+            setSearchLoading(false);
+          }
+        };
+
+        const handleQuickSummary = async (coinId) => {
+          try {
+            const res = await fetch(`${COIN_DETAILS_URL}/${coinId}?localization=false`);
+            const data = await res.json();
+            setSelectedCoin(data);
+          } catch {
+            setError("FAILED TO LOAD COIN DETAILS");
+          }
+        };
+
+        const handleAdvancedAnalysis = async (coinId) => {
+          try {
+            const res = await fetch(`${COIN_DETAILS_URL}/${coinId}?localization=false`);
+            const data = await res.json();
+            setSelectedCoin(data);
+            setView("analysis");
+          } catch {
+            setError("FAILED TO LOAD COIN DETAILS");
+          }
+        };
+
+        const clearSearch = () => {
+          setQuery("");
+          setSearchResults([]);
+        };
+
+        const closeModal = () => setSelectedCoin(null);
+        const handleBackToDashboard = () => {
+          setView("dashboard");
+          setSearchResults([]);
+          setQuery("");
+        };
+
+        if (view === "analysis" && selectedCoin) {
+          return React.createElement(AdvancedAnalysisPage, { 
+            coin: selectedCoin, 
+            onBack: handleBackToDashboard 
+          });
+        }
+
+        return React.createElement('div', { className: "App" },
+          React.createElement(CryptoBackground),
+          
+          React.createElement('header', null,
+            React.createElement('h1', { className: "logo" }, "COINMIND ", React.createElement('span', null, "AI")),
+            React.createElement('p', { className: "powered" }, "PROFESSIONAL CRYPTO ANALYSIS")
+          ),
+
+          React.createElement('div', { className: "search-container" },
+            React.createElement('input', {
+              type: "text",
+              placeholder: "SEARCH ANY CRYPTOCURRENCY...",
+              value: query,
+              onChange: (e) => setQuery(e.target.value),
+              onKeyDown: (e) => e.key === "Enter" && handleSearch()
+            }),
+            React.createElement('button', { 
+              onClick: handleSearch,
+              disabled: searchLoading || !query.trim()
+            }, searchLoading ? "SEARCHING..." : "SEARCH"),
+            query && React.createElement('button', { 
+              onClick: clearSearch,
+              style: {
+                position: 'absolute',
+                right: '120px',
+                background: 'transparent',
+                border: 'none',
+                color: 'var(--text-muted)',
+                cursor: 'pointer',
+                fontSize: '1.2rem'
+              }
+            }, "✕")
+          ),
+
+          error && React.createElement(ErrorMessage, { 
+            message: error, 
+            onRetry: () => window.location.reload() 
+          }),
+
+          // Search Results
+          searchResults.length > 0 && React.createElement('section', { className: "top-coins" },
+            React.createElement('h2', null, "SEARCH RESULTS"),
+            React.createElement('div', { className: "coins-grid" },
+              searchResults.map((result) =>
+                React.createElement(SearchResultCard, {
+                  key: result.id,
+                  result: result,
+                  onQuickSummary: handleQuickSummary,
+                  onAdvancedAnalysis: handleAdvancedAnalysis
+                })
+              )
+            )
+          ),
+
+          // Top Coins
+          !searchResults.length && React.createElement('section', { className: "top-coins" },
+            React.createElement('h2', null, "TOP 30 CRYPTOCURRENCIES"),
+            loading ? 
+              React.createElement(LoadingSpinner) : 
+              React.createElement('div', { className: "coins-grid" },
+                topCoins.map((coin) =>
+                  React.createElement(CoinCard, {
+                    key: coin.id,
+                    coin: coin,
+                    onQuickSummary: handleQuickSummary,
+                    onAdvancedAnalysis: handleAdvancedAnalysis
+                  })
+                )
+              )
+          ),
+
+          React.createElement(QuickSummaryModal, { 
+            coin: selectedCoin, 
+            onClose: closeModal 
+          })
+        );
+      }
+
+      // Render the app
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(React.createElement(App));
+    </script>
+  </body>
 </html>
