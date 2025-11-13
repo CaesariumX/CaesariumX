@@ -1,1 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caesar Chamber - Crypto Trading Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
 
+        body {
+            background: #0a0a0a;
+            color: #00ff41;
+            height: 100vh;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 255, 65, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 255, 65, 0.05) 0%, transparent 20%);
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .header {
+            background: #111111;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #00ff41;
+            box-shadow: 0 2px 10px rgba(0, 255, 65, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: #00ff41;
+            font-size: 24px;
+        }
+
+        .logo h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #00ff41;
+            text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 20px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 10px 15px;
+            color: #00ff41;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: #00ff41;
+            box-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+
+        .search-result-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #333;
+        }
+
+        .search-result-item:hover {
+            background: #222;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #1a1a1a;
+            border: 1px solid #00ff41;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #00ff41;
+        }
+
+        .username-input {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 8px 12px;
+            color: #00ff41;
+            font-size: 14px;
+            outline: none;
+            width: 150px;
+        }
+
+        .username-input:focus {
+            border-color: #00ff41;
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: #111111;
+            border-right: 1px solid #00ff41;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .coin-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .coin-list h3 {
+            padding: 0 20px 15px;
+            font-size: 16px;
+            color: #00ff41;
+            border-bottom: 1px solid #333;
+            margin-bottom: 15px;
+        }
+
+        .coin-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .coin-item:hover {
+            background: #1a1a1a;
+        }
+
+        .coin-item.active {
+            background: #1a1a1a;
+            border-left: 3px solid #00ff41;
+        }
+
+        .coin-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            color: #00ff41;
+        }
+
+        .coin-info {
+            flex: 1;
+        }
+
+        .coin-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .coin-price {
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .price-up {
+            color: #00ff41;
+        }
+
+        .price-down {
+            color: #ff3333;
+        }
+
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chart-container {
+            height: 50%;
+            background: #111111;
+            border-bottom: 1px solid #333;
+            position: relative;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .chart-title {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .timeframe-btn {
+            padding: 5px 10px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 4px;
+            color: #00ff41;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .timeframe-btn.active {
+            background: #00ff41;
+            color: #0a0a0a;
+        }
+
+        #tradingview-chart {
+            height: calc(100% - 60px);
+            width: 100%;
+        }
+
+        .news-chat-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .news-container {
+            width: 30%;
+            background: #111111;
+            border-right: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .news-header {
+            padding: 15px;
+            border-bottom: 1px solid #333;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #00ff41;
+        }
+
+        .news-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .news-item {
+            padding: 12px;
+            background: #1a1a1a;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 2px solid transparent;
+        }
+
+        .news-item:hover {
+            background: #222;
+            border-left: 2px solid #00ff41;
+        }
+
+        .news-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #eee;
+        }
+
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #00ff41;
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 15px;
+            border-bottom: 1px solid #333;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #00ff41;
+        }
+
+        .online-count {
+            background: #00ff41;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            color: #0a0a0a;
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            display: flex;
+            gap: 10px;
+            max-width: 80%;
+        }
+
+        .message.own {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            flex-shrink: 0;
+            color: #00ff41;
+        }
+
+        .message-content {
+            background: #1a1a1a;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.4;
+            border: 1px solid #333;
+            color: #eee;
+        }
+
+        .message.own .message-content {
+            background: #1a1a1a;
+            border: 1px solid #00ff41;
+        }
+
+        .message-sender {
+            font-weight: 600;
+            font-size: 12px;
+            margin-bottom: 3px;
+            color: #00ff41;
+        }
+
+        .message.own .message-sender {
+            text-align: right;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: #666;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .chat-input-container {
+            padding: 15px;
+            border-top: 1px solid #333;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 12px 20px;
+            color: #00ff41;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .chat-input:focus {
+            border-color: #00ff41;
+            box-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+        }
+
+        .send-btn {
+            background: #1a1a1a;
+            border: 1px solid #00ff41;
+            border-radius: 4px;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00ff41;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .send-btn:hover {
+            background: #00ff41;
+            color: #0a0a0a;
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .send-btn:disabled:hover {
+            background: #1a1a1a;
+            color: #00ff41;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #111111;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00ff41;
+        }
+
+        .loading {
+            color: #00ff41;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        .login-prompt {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 20px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .login-btn {
+            background: #00ff41;
+            color: #0a0a0a;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .firebase-error {
+            background: #ff3333;
+            color: white;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-terminal"></i>
+                <h1>CAESAR CHAMBER</h1>
+            </div>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search for a coin...">
+                <div class="search-results"></div>
+            </div>
+            <div class="user-info">
+                <input type="text" class="username-input" id="usernameInput" placeholder="Enter username" maxlength="15">
+                <div class="user-avatar" id="userAvatar">?</div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <aside class="sidebar">
+                <div class="coin-list">
+                    <h3>TRADING PAIRS</h3>
+                    <div id="coinList">
+                        <div class="loading pulse">Loading crypto data...</div>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="content-area">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title" id="chartTitle">BTC/USD - TradingView Chart</div>
+                        <div class="chart-controls">
+                            <button class="timeframe-btn" data-timeframe="1">1H</button>
+                            <button class="timeframe-btn active" data-timeframe="1D">1D</button>
+                            <button class="timeframe-btn" data-timeframe="1W">1W</button>
+                            <button class="timeframe-btn" data-timeframe="1M">1M</button>
+                        </div>
+                    </div>
+                    <div id="tradingview-chart"></div>
+                </div>
+
+                <div class="news-chat-container">
+                    <div class="news-container">
+                        <div class="news-header">
+                            <i class="fas fa-newspaper"></i>
+                            LATEST NEWS
+                        </div>
+                        <div class="news-list" id="newsList">
+                            <div class="loading pulse">Loading crypto news...</div>
+                        </div>
+                    </div>
+
+                    <div class="chat-container">
+                        <div class="chat-header">
+                            <i class="fas fa-comments"></i>
+                            <span id="chatRoomTitle">BTC TRADING CHAT</span>
+                            <div class="online-count" id="onlineCount">0 online</div>
+                        </div>
+                        <div class="messages-container" id="messagesContainer">
+                            <div class="login-prompt" id="loginPrompt">
+                                <div>Enter a username above to start chatting</div>
+                                <div class="loading pulse">Connecting to real-time chat...</div>
+                            </div>
+                        </div>
+                        <div class="chat-input-container">
+                            <input type="text" class="chat-input" id="chatInput" placeholder="Enter username to chat..." disabled>
+                            <button class="send-btn" id="sendButton" disabled>
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase configuration - REPLACE WITH YOUR ACTUAL FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEMO_KEY_REPLACE_THIS",
+            authDomain: "caesar-chamber.firebaseapp.com",
+            projectId: "caesar-chamber",
+            storageBucket: "caesar-chamber.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abc123def456"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // Global variables
+        let currentCoin = 'BTC';
+        let currentSymbol = 'BINANCE:BTCUSDT';
+        let currentTimeframe = '1D';
+        let coinList = [];
+        let tradingViewWidget = null;
+        let currentUser = null;
+        let unsubscribeChat = null;
+        let onlineUsers = new Set();
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Firebase anonymously
+            auth.signInAnonymously()
+                .then(() => {
+                    console.log('Connected to Firebase');
+                })
+                .catch((error) => {
+                    console.error('Firebase auth error:', error);
+                    showFirebaseError();
+                });
+
+            // Set up auth state listener
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    currentUser = user;
+                    console.log('User signed in:', user.uid);
+                } else {
+                    console.log('User signed out');
+                }
+            });
+
+            // Load initial data
+            loadTopCoins();
+            loadNews();
+            initializeTradingViewChart();
+            
+            // Set up event listeners
+            setupEventListeners();
+        });
+
+        // Show Firebase connection error
+        function showFirebaseError() {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'firebase-error';
+            errorDiv.textContent = 'Chat features unavailable - using demo mode';
+            document.body.appendChild(errorDiv);
+        }
+
+        // Set up all event listeners
+        function setupEventListeners() {
+            // Search functionality
+            const searchInput = document.querySelector('.search-input');
+            const searchResults = document.querySelector('.search-results');
+            
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                if (query.length > 1) {
+                    searchCoins(query);
+                    searchResults.style.display = 'block';
+                } else {
+                    searchResults.style.display = 'none';
+                }
+            });
+            
+            // Timeframe buttons
+            const timeframeBtns = document.querySelectorAll('.timeframe-btn');
+            timeframeBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    timeframeBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentTimeframe = this.getAttribute('data-timeframe');
+                    updateTradingViewChart();
+                });
+            });
+            
+            // Chat functionality
+            const chatInput = document.getElementById('chatInput');
+            const sendButton = document.getElementById('sendButton');
+            const usernameInput = document.getElementById('usernameInput');
+            
+            // Username input
+            usernameInput.addEventListener('input', function() {
+                const username = this.value.trim();
+                if (username.length > 0) {
+                    document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+                    chatInput.placeholder = "Type your trading idea...";
+                    chatInput.disabled = false;
+                    sendButton.disabled = false;
+                    document.getElementById('loginPrompt').style.display = 'none';
+                } else {
+                    document.getElementById('userAvatar').textContent = '?';
+                    chatInput.placeholder = "Enter username to chat...";
+                    chatInput.disabled = true;
+                    sendButton.disabled = true;
+                    document.getElementById('loginPrompt').style.display = 'flex';
+                }
+            });
+            
+            sendButton.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        }
+
+        // Load top cryptocurrencies
+        async function loadTopCoins() {
+            try {
+                const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false');
+                coinList = await response.json();
+                
+                const coinListContainer = document.getElementById('coinList');
+                coinListContainer.innerHTML = '';
+                
+                coinList.forEach((coin, index) => {
+                    const coinItem = createCoinItem(coin, index === 0);
+                    coinListContainer.appendChild(coinItem);
+                });
+            } catch (error) {
+                console.error('Error loading coins:', error);
+                document.getElementById('coinList').innerHTML = '<div class="loading">Failed to load crypto data</div>';
+            }
+        }
+
+        // Create coin item element
+        function createCoinItem(coin, isActive = false) {
+            const coinItem = document.createElement('div');
+            coinItem.className = `coin-item ${isActive ? 'active' : ''}`;
+            coinItem.setAttribute('data-coin-id', coin.id);
+            coinItem.setAttribute('data-coin-symbol', coin.symbol.toUpperCase());
+            
+            const priceChange = coin.price_change_percentage_24h || 0;
+            const priceChangeClass = priceChange >= 0 ? 'price-up' : 'price-down';
+            const changeSymbol = priceChange >= 0 ? '+' : '';
+            
+            coinItem.innerHTML = `
+                <div class="coin-icon">${coin.symbol.toUpperCase()}</div>
+                <div class="coin-info">
+                    <div class="coin-name">${coin.name} (${coin.symbol.toUpperCase()})</div>
+                    <div class="coin-price ${priceChangeClass}">$${coin.current_price.toLocaleString()} <span>${changeSymbol}${priceChange.toFixed(2)}%</span></div>
+                </div>
+            `;
+            
+            coinItem.addEventListener('click', function() {
+                document.querySelectorAll('.coin-item').forEach(item => item.classList.remove('active'));
+                this.classList.add('active');
+                
+                const coinId = this.getAttribute('data-coin-id');
+                const coinSymbol = this.getAttribute('data-coin-symbol');
+                
+                const coin = coinList.find(c => c.id === coinId);
+                if (coin) {
+                    currentCoin = coinSymbol;
+                    currentSymbol = `BINANCE:${coinSymbol}USDT`;
+                    
+                    updateTradingViewChart();
+                    updateNews();
+                    updateChatRoom();
+                }
+            });
+            
+            return coinItem;
+        }
+
+        // Search for coins
+        async function searchCoins(query) {
+            try {
+                const response = await fetch(`https://api.coingecko.com/api/v3/search?query=${query}`);
+                const data = await response.json();
+                
+                const searchResults = document.querySelector('.search-results');
+                searchResults.innerHTML = '';
+                
+                if (data.coins && data.coins.length > 0) {
+                    data.coins.slice(0, 8).forEach(coin => {
+                        const resultItem = document.createElement('div');
+                        resultItem.className = 'search-result-item';
+                        resultItem.textContent = `${coin.name} (${coin.symbol.toUpperCase()})`;
+                        resultItem.setAttribute('data-coin-id', coin.id);
+                        resultItem.setAttribute('data-coin-symbol', coin.symbol.toUpperCase());
+                        
+                        resultItem.addEventListener('click', function() {
+                            document.querySelector('.search-input').value = '';
+                            searchResults.style.display = 'none';
+                            
+                            const coinId = this.getAttribute('data-coin-id');
+                            const coinSymbol = this.getAttribute('data-coin-symbol');
+                            
+                            // Check if coin exists in list
+                            let coinExists = false;
+                            document.querySelectorAll('.coin-item').forEach(item => {
+                                if (item.getAttribute('data-coin-id') === coinId) {
+                                    item.click();
+                                    coinExists = true;
+                                }
+                            });
+                            
+                            if (!coinExists) {
+                                // Add to sidebar temporarily
+                                const tempCoin = {
+                                    id: coinId,
+                                    symbol: coinSymbol,
+                                    name: coin.name
+                                };
+                                const coinItem = createCoinItem(tempCoin, true);
+                                document.getElementById('coinList').prepend(coinItem);
+                                
+                                currentCoin = coinSymbol;
+                                currentSymbol = `BINANCE:${coinSymbol}USDT`;
+                                updateTradingViewChart();
+                                updateNews();
+                                updateChatRoom();
+                            }
+                        });
+                        
+                        searchResults.appendChild(resultItem);
+                    });
+                } else {
+                    const noResults = document.createElement('div');
+                    noResults.className = 'search-result-item';
+                    noResults.textContent = 'No coins found';
+                    searchResults.appendChild(noResults);
+                }
+            } catch (error) {
+                console.error('Error searching coins:', error);
+            }
+        }
+
+        // Initialize TradingView chart
+        function initializeTradingViewChart() {
+            tradingViewWidget = new TradingView.widget({
+                container_id: "tradingview-chart",
+                autosize: true,
+                symbol: currentSymbol,
+                interval: currentTimeframe,
+                timezone: "Etc/UTC",
+                theme: "dark",
+                style: "1",
+                locale: "en",
+                toolbar_bg: "#1a1a1a",
+                enable_publishing: false,
+                allow_symbol_change: false,
+                hide_side_toolbar: false,
+                studies: ["RSI@tv-basicstudies", "MACD@tv-basicstudies"],
+                backgroundColor: "#111111"
+            });
+        }
+
+        // Update TradingView chart
+        function updateTradingViewChart() {
+            if (tradingViewWidget) {
+                tradingViewWidget.remove();
+            }
+            
+            tradingViewWidget = new TradingView.widget({
+                container_id: "tradingview-chart",
+                autosize: true,
+                symbol: currentSymbol,
+                interval: currentTimeframe,
+                timezone: "Etc/UTC",
+                theme: "dark",
+                style: "1",
+                locale: "en",
+                toolbar_bg: "#1a1a1a",
+                enable_publishing: false,
+                allow_symbol_change: false,
+                hide_side_toolbar: false,
+                studies: ["RSI@tv-basicstudies", "MACD@tv-basicstudies"],
+                backgroundColor: "#111111"
+            });
+            
+            document.getElementById('chartTitle').textContent = `${currentCoin}/USD - TradingView Chart`;
+        }
+
+        // Load crypto news
+        async function loadNews() {
+            try {
+                const response = await fetch('https://cryptopanic.com/api/v1/posts/?auth_token=demo&public=true');
+                const data = await response.json();
+                
+                const newsListContainer = document.getElementById('newsList');
+                newsListContainer.innerHTML = '';
+                
+                if (data.results && data.results.length > 0) {
+                    data.results.slice(0, 10).forEach(newsItem => {
+                        const newsElement = document.createElement('div');
+                        newsElement.className = 'news-item';
+                        
+                        const published = new Date(newsItem.published_at);
+                        const timeAgo = getTimeAgo(published);
+                        
+                        newsElement.innerHTML = `
+                            <div class="news-title">${newsItem.title}</div>
+                            <div class="news-meta">
+                                <span>${newsItem.source.title}</span>
+                                <span>${timeAgo}</span>
+                            </div>
+                        `;
+                        
+                        newsElement.addEventListener('click', function() {
+                            window.open(newsItem.url, '_blank');
+                        });
+                        
+                        newsListContainer.appendChild(newsElement);
+                    });
+                } else {
+                    newsListContainer.innerHTML = '<div class="loading">No news available</div>';
+                }
+            } catch (error) {
+                console.error('Error loading news:', error);
+                document.getElementById('newsList').innerHTML = '<div class="loading">Failed to load news</div>';
+            }
+        }
+
+        // Update chat room when coin changes
+        function updateChatRoom() {
+            document.getElementById('chatRoomTitle').textContent = `${currentCoin} TRADING CHAT`;
+            
+            // Unsubscribe from previous chat room
+            if (unsubscribeChat) {
+                unsubscribeChat();
+            }
+            
+            // Load messages for new coin
+            loadChatMessages();
+            
+            // Update online count
+            updateOnlineCount();
+        }
+
+        // Load chat messages from Firebase
+        function loadChatMessages() {
+            const messagesContainer = document.getElementById('messagesContainer');
+            messagesContainer.innerHTML = '<div class="loading pulse">Loading messages...</div>';
+            
+            // Reference to the chat room for current coin
+            const chatRef = db.collection('chats').doc(currentCoin).collection('messages');
+            
+            // Subscribe to real-time updates
+            unsubscribeChat = chatRef
+                .orderBy('timestamp', 'asc')
+                .onSnapshot((snapshot) => {
+                    messagesContainer.innerHTML = '';
+                    
+                    if (snapshot.empty) {
+                        const welcomeMsg = document.createElement('div');
+                        welcomeMsg.className = 'message';
+                        welcomeMsg.innerHTML = `
+                            <div class="message-avatar">S</div>
+                            <div>
+                                <div class="message-sender">System</div>
+                                <div class="message-content">
+                                    Welcome to the ${currentCoin} trading chat! Start the conversation.
+                                </div>
+                                <div class="message-time">${new Date().toLocaleTimeString()}</div>
+                            </div>
+                        `;
+                        messagesContainer.appendChild(welcomeMsg);
+                        return;
+                    }
+                    
+                    snapshot.forEach((doc) => {
+                        const message = doc.data();
+                        const messageElement = createMessageElement(message);
+                        messagesContainer.appendChild(messageElement);
+                    });
+                    
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, (error) => {
+                    console.error('Error loading messages:', error);
+                    messagesContainer.innerHTML = '<div class="loading">Failed to load messages</div>';
+                });
+        }
+
+        // Create message element
+        function createMessageElement(message) {
+            const messageElement = document.createElement('div');
+            const isOwn = message.userId === currentUser?.uid;
+            messageElement.className = `message ${isOwn ? 'own' : ''}`;
+            
+            const time = message.timestamp?.toDate ? 
+                message.timestamp.toDate().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 
+                new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            messageElement.innerHTML = `
+                <div class="message-avatar">${message.username?.charAt(0) || '?'}</div>
+                <div>
+                    <div class="message-sender">${message.username || 'Anonymous'}</div>
+                    <div class="message-content">${message.text}</div>
+                    <div class="message-time">${time}</div>
+                </div>
+            `;
+            
+            return messageElement;
+        }
+
+        // Send message to Firebase
+        function sendMessage() {
+            const chatInput = document.getElementById('chatInput');
+            const messageText = chatInput.value.trim();
+            const username = document.getElementById('usernameInput').value.trim();
+            
+            if (!messageText || !username || !currentUser) return;
+            
+            const chatRef = db.collection('chats').doc(currentCoin).collection('messages');
+            
+            chatRef.add({
+                text: messageText,
+                username: username,
+                userId: currentUser.uid,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+                chatInput.value = '';
+            })
+            .catch((error) => {
+                console.error('Error sending message:', error);
+                alert('Failed to send message. Please try again.');
+            });
+        }
+
+        // Update online users count
+        function updateOnlineCount() {
+            // In a real app, you'd use Firebase Presence or track online users
+            // For now, we'll simulate with a random number
+            const onlineCount = Math.floor(Math.random() * 50) + 5;
+            document.getElementById('onlineCount').textContent = `${onlineCount} online`;
+        }
+
+        // Helper function to get time ago
+        function getTimeAgo(date) {
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMins / 60);
+            const diffDays = Math.floor(diffHours / 24);
+            
+            if (diffMins < 60) return `${diffMins} min ago`;
+            if (diffHours < 24) return `${diffHours} hr ago`;
+            return `${diffDays} day ago`;
+        }
+    </script>
+</body>
+</html>
