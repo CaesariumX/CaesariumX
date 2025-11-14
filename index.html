@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CaesariumX - AI Tools Platform</title>
+  <title>CaesariumX - The Movement</title>
   <style>
     * {
       margin: 0;
@@ -213,6 +213,103 @@
       letter-spacing: 0.05em;
     }
 
+    /* Movement Section */
+    .movement-section {
+      padding: 5rem 2rem;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .movement-content {
+      max-width: 1000px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .movement-content h2 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .movement-tagline {
+      font-size: 1.4rem;
+      color: var(--text-secondary);
+      margin-bottom: 3rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+
+    .movement-values {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .value-card {
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2.5rem;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .value-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .value-card:hover::before {
+      left: 100%;
+    }
+
+    .value-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--border-light);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .value-icon {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50%;
+    }
+
+    .value-icon svg {
+      width: 60%;
+      height: 60%;
+      filter: brightness(0) invert(1);
+    }
+
+    .value-card h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .value-card p {
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
     /* AI Tools Grid */
     .ai-tools {
       padding: 4rem 2rem;
@@ -317,42 +414,113 @@
       transform: translateY(-2px);
     }
 
-    /* Token Info Section */
+    /* Enhanced Token Section */
     .token-section {
-      padding: 4rem 2rem;
-      background: var(--bg-card);
+      padding: 6rem 2rem;
+      background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-darker) 100%);
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .token-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+      pointer-events: none;
     }
 
     .token-content {
-      max-width: 800px;
+      max-width: 1000px;
       margin: 0 auto;
       text-align: center;
+      position: relative;
+      z-index: 1;
     }
 
     .token-content h2 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 2rem;
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
+      background: linear-gradient(45deg, var(--text-primary), var(--text-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .token-tagline {
+      font-size: 1.4rem;
+      color: var(--text-secondary);
+      margin-bottom: 3rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+
+    .token-features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin: 3rem 0;
+    }
+
+    .token-feature {
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .token-feature:hover {
+      transform: translateY(-5px);
+      border-color: var(--border-light);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .token-feature h4 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .token-feature p {
+      color: var(--text-secondary);
+      line-height: 1.6;
     }
 
     .contract-info {
       background: var(--bg-dark);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.5rem;
-      margin: 2rem 0;
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 3rem 0;
+      transition: all 0.3s ease;
+    }
+
+    .contract-info:hover {
+      border-color: var(--border-light);
+      box-shadow: var(--shadow);
     }
 
     .contract-address {
       font-family: monospace;
       word-break: break-all;
       color: var(--text-secondary);
-      margin-bottom: 1rem;
-      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
     }
 
     .contract-links {
@@ -363,20 +531,54 @@
     }
 
     .contract-link {
-      padding: 0.5rem 1rem;
+      padding: 0.75rem 1.5rem;
       background: var(--text-primary);
       color: var(--bg-dark);
-      border-radius: 6px;
-      font-weight: 600;
+      border-radius: 8px;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      font-size: 0.8rem;
       transition: all 0.3s ease;
     }
 
     .contract-link:hover {
       background: var(--primary-dark);
       transform: translateY(-2px);
+    }
+
+    /* Token Stats */
+    .token-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin: 3rem 0;
+    }
+
+    .token-stat {
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .token-stat:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-light);
+    }
+
+    .token-stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    .token-stat-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     /* Social Links */
@@ -477,8 +679,36 @@
         font-size: 1.2rem;
       }
 
+      .movement-content h2 {
+        font-size: 2rem;
+      }
+
+      .movement-tagline {
+        font-size: 1.1rem;
+      }
+
+      .token-content h2 {
+        font-size: 2.5rem;
+      }
+
+      .token-tagline {
+        font-size: 1.1rem;
+      }
+
       .tools-grid {
         grid-template-columns: 1fr;
+      }
+
+      .movement-values {
+        grid-template-columns: 1fr;
+      }
+
+      .token-features {
+        grid-template-columns: 1fr;
+      }
+
+      .token-stats {
+        grid-template-columns: repeat(2, 1fr);
       }
 
       .contract-links {
@@ -522,6 +752,7 @@
     </div>
 
     <nav class="nav-links" id="navLinks">
+      <a href="#movement">Our Movement</a>
       <a href="#ai-tools">AI Tools</a>
       <a href="#token">Token</a>
       <a href="#social">Community</a>
@@ -533,10 +764,62 @@
   <section class="hero">
     <div class="hero-content">
       <h1>CAESARIUM X</h1>
-      <div class="tagline">AI Tools Platform • Power to the Holders</div>
+      <div class="tagline">The Movement • Power to the People</div>
       <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
-        Advanced AI tools platform combining cryptocurrency analysis, trading automation, and intelligent market insights.
+        A revolutionary platform creating powerful tools for everyone, not just profits for the few. Join our family of innovators.
       </p>
+    </div>
+  </section>
+
+  <section class="movement-section" id="movement">
+    <div class="movement-content">
+      <h2>Our Movement</h2>
+      <div class="movement-tagline">
+        We're not just building tools - we're building a family of creators and innovators
+      </div>
+      <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 2rem; max-width: 800px; margin-left: auto; margin-right: auto;">
+        CaesariumX was born from a simple idea: technology should empower people, not exploit them. We create powerful applications and tools that are freely available to everyone, without hidden costs, data mining, or restrictive terms. When you join CaesariumX, you're not just a user - you're a brother or sister in our growing family of innovators.
+      </p>
+      
+      <div class="movement-values">
+        <div class="value-card">
+          <div class="value-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M19 4H5C4.44772 4 4 4.44772 4 5V19C4 19.5523 4.44772 20 5 20H19C19.5523 20 20 19.5523 20 19V5C20 4.44772 19.5523 4 19 4Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M16 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M8 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Freedom First</h3>
+          <p>Our tools are designed to give you control, not take it away. No hidden agendas, no data exploitation - just powerful technology at your fingertips.</p>
+        </div>
+        
+        <div class="value-card">
+          <div class="value-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89318 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3>Family, Not Users</h3>
+          <p>When you join CaesariumX, you become part of our family. We support each other, share knowledge, and grow together as a community.</p>
+        </div>
+        
+        <div class="value-card">
+          <div class="value-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M9.09 9C9.3251 8.33167 9.78915 7.76811 10.4 7.40913C11.0108 7.05016 11.7289 6.91894 12.4272 7.03871C13.1255 7.15848 13.7588 7.52152 14.2151 8.06353C14.6713 8.60553 14.9211 9.29152 14.92 10C14.92 12 11.92 13 11.92 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 17H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3>Transparent Innovation</h3>
+          <p>We believe in open development, clear communication, and community input. Our roadmap is your roadmap, and your voice matters in our direction.</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -556,20 +839,21 @@
       </div>
 
       <div class="tool-card">
-  <div class="tool-icon">
-    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 2L13 4L15 5L13 6L12 8L11 6L9 5L11 4L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M18 8L20 9L22 8L20 7L18 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M6 8L4 9L2 8L4 7L6 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M12 22V16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M17 13L19 15L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M7 13L5 15L7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </div>
-  <h3>Caesar Chamber</h3>
-  <p>Real-time crypto trading platform with live charts, news, and collaborative chat rooms for each cryptocurrency.</p>
-  <a href="./caesar-chamber/index.html" class="tool-link">Launch App</a>
-</div>
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L13 4L15 5L13 6L12 8L11 6L9 5L11 4L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M18 8L20 9L22 8L20 7L18 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6 8L4 9L2 8L4 7L6 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 22V16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M17 13L19 15L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M7 13L5 15L7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Caesar Chamber</h3>
+        <p>Real-time crypto trading platform with live charts, news, and collaborative chat rooms for each cryptocurrency.</p>
+        <a href="./caesar-chamber/index.html" class="tool-link">Launch App</a>
+      </div>
+      
       <div class="tool-card">
         <div class="tool-icon">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -627,9 +911,47 @@
   <section class="token-section" id="token">
     <div class="token-content">
       <h2>$CRX Token</h2>
-      <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 2rem;">
-        Powering the CaesariumX ecosystem with utility, governance, and premium feature access.
-      </p>
+      <div class="token-tagline">
+        Fueling our movement and supporting innovation for our family
+      </div>
+      
+      <div class="token-stats">
+        <div class="token-stat">
+          <div class="token-stat-value">100M</div>
+          <div class="token-stat-label">Total Supply</div>
+        </div>
+        <div class="token-stat">
+          <div class="token-stat-value">60%</div>
+          <div class="token-stat-label">Public Sale</div>
+        </div>
+        <div class="token-stat">
+          <div class="token-stat-value">20%</div>
+          <div class="token-stat-label">Development</div>
+        </div>
+        <div class="token-stat">
+          <div class="token-stat-value">20%</div>
+          <div class="token-stat-label">Team & Community</div>
+        </div>
+      </div>
+
+      <div class="token-features">
+        <div class="token-feature">
+          <h4>Governance Power</h4>
+          <p>Holders shape the future of CaesariumX through voting on new tools, features, and platform direction.</p>
+        </div>
+        <div class="token-feature">
+          <h4>Premium Access</h4>
+          <p>Unlock advanced features, early tool access, and exclusive content within the CaesariumX ecosystem.</p>
+        </div>
+        <div class="token-feature">
+          <h4>Revenue Sharing</h4>
+          <p>Participate in platform revenue through staking rewards and token buybacks from tool usage.</p>
+        </div>
+        <div class="token-feature">
+          <h4>Family Benefits</h4>
+          <p>Special discounts, airdrops, and privileges for long-term holders and active community members.</p>
+        </div>
+      </div>
 
       <div class="contract-info">
         <div class="contract-address">
@@ -638,29 +960,32 @@
         <div class="contract-links">
           <a href="https://etherscan.io/address/0x699133f4Fe4eD7232B88f1520927be03D26540FC" target="_blank" class="contract-link">View on Etherscan</a>
           <a href="public-sale.html" class="contract-link">Join Public Sale</a>
+          <a href="#" class="contract-link">Add to Wallet</a>
         </div>
       </div>
     </div>
   </section>
 
   <section class="social-section" id="social">
-    <h2>Join Our Community</h2>
+    <h2>Join Our Family</h2>
     <div class="social-links">
       <a href="https://x.com/CaesariumX" target="_blank" class="social-link">X (Twitter)</a>
       <a href="https://discord.gg/2nwABWxR" target="_blank" class="social-link">Discord</a>
+      <a href="https://t.me/CaesariumX" target="_blank" class="social-link">Telegram</a>
     </div>
   </section>
 
   <footer>
     <div class="footer-content">
       <div class="footer-links">
+        <a href="#movement" class="footer-link">Our Movement</a>
         <a href="#ai-tools" class="footer-link">AI Tools</a>
         <a href="#token" class="footer-link">Token</a>
         <a href="#social" class="footer-link">Community</a>
         <a href="CaesariumX_Whitepaper.pdf" download class="footer-link">Whitepaper</a>
         <a href="public-sale.html" class="footer-link">Public Sale</a>
       </div>
-      <p>&copy; 2025 CaesariumX • AI Tools Platform</p>
+      <p>&copy; 2025 CaesariumX • The Movement</p>
       <p style="margin-top: 0.5rem; color: var(--text-muted);">
         Contact: <a href="mailto:caesariumx@outlook.com" style="color: var(--text-secondary);">caesariumx@outlook.com</a>
       </p>
@@ -700,6 +1025,32 @@
 
     // Update tickers every 5 seconds
     setInterval(updateTickers, 5000);
+
+    // Add scroll animations
+    document.addEventListener('DOMContentLoaded', function() {
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, observerOptions);
+
+      // Observe elements for animation
+      const animatedElements = document.querySelectorAll('.value-card, .token-feature, .token-stat');
+      animatedElements.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+      });
+    });
   </script>
 </body>
 </html>
